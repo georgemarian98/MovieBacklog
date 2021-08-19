@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.31515.178
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBacklog", "WebApplication1\MovieBacklog.csproj", "{531BAA4B-F219-409A-A63E-B2D43E9AA235}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "MovieBacklog", "MovieBacklog\MovieBacklog.csproj", "{531BAA4B-F219-409A-A63E-B2D43E9AA235}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
