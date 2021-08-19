@@ -20,7 +20,6 @@ namespace Backlog.Controllers
             this.moviesService = moviesService;
         }
 
-        // GET: MovieController
         public ActionResult Index()
         {
             return View(moviesService.GetBacklog());
