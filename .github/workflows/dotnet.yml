@@ -34,6 +34,7 @@ jobs:
       run: dotnet test --no-build --verbosity normal
       working-directory: MovieBacklog/MovieBacklog
 
+  deploy:
     - name: Docker build
       run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
 
