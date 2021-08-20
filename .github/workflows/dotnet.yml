@@ -36,12 +36,13 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
+    - uses: actions/checkout@v2
     - name: Docker build
       run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
 
     # Push the Docker image to Heroku Container Registry
     - name: Publish
-      # working-directory: MovieBacklog/MovieBacklog
+      working-directory: MovieBacklog/MovieBacklog
       run: |
         heroku container:push web -a $APP_NAME
         heroku container:release web -a $APP_NAME
