@@ -35,6 +35,9 @@ jobs:
       working-directory: MovieBacklog/MovieBacklog
 
   deploy:
+
+    runs-on: ubuntu-latest
+    
     - name: Docker build
       run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
 
