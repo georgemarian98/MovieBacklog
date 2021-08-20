@@ -12,9 +12,7 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
@@ -35,9 +33,9 @@ jobs:
       working-directory: MovieBacklog/MovieBacklog
 
   deploy:
-
+    needs: build
     runs-on: ubuntu-latest
-    
+    steps:
     - name: Docker build
       run: docker login --username=_ --password=$HEROKU_API_KEY registry.heroku.com
 
