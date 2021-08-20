@@ -12,7 +12,7 @@ namespace MovieBacklog.Services
 
         public MoviesService()
         {
-            var movie = new MovieRecord("American history X", 1998, "https://www.imdb.com/title/tt0120586/", "https://m.media-amazon.com/images/M/MV5BZTJhN2FkYWEtMGI0My00YWM4LWI2MjAtM2UwNjY4MTI2ZTQyXkEyXkFqcGdeQXVyNjc3MjQzNTI@._V1_.jpg");
+            var movie = new MovieRecord("Good Will Hunting", 1997, "https://www.imdb.com/title/tt0119217", "https://m.media-amazon.com/images/M/MV5BOTI0MzcxMTYtZDVkMy00NjY1LTgyMTYtZmUxN2M3NmQ2NWJhXkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_.jpg");
             Movies = new List<MovieRecord>();
             Movies.Add(movie);
         }
