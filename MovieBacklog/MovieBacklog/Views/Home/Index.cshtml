@@ -9,9 +9,11 @@
 
 <div class="text-left">
     <h1>Movie List:</h1>
-    <table class="list-group-item">
-        @foreach (var movie in Model) { 
+    <table class="list-group-item css-serial" >
+        @foreach (var movie in Model)
+        {
             <tr>
+                <td></td>
                 <td>
                     <img src=@movie.ThumbnailUrl style="width:92px;height:140px;">
                 </td>
@@ -24,3 +26,15 @@
         }
     </table>
 </div>
+
+<style>
+    /*adding row numbers through css*/
+    .css-serial {
+        counter-reset: serial-number; /* Set the serial number counter to 0 */
+    }
+
+        .css-serial td:first-child:before {
+            counter-increment: serial-number; /* Increment the serial number counter */
+            content: counter(serial-number); /* Display the counter */
+        }
+</style>
