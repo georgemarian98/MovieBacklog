@@ -1,16 +1,13 @@
 ﻿@model IEnumerable<Backlog.Models.MovieRecord>
-@{
-    ViewData["Title"] = "Home page";
-}
 
 @section scripts {
-    <script type="text/javascript" src="~/js/index.js"></script>
+    <script src="~/js/index.js" type="text/javascript"></script>
 }
 
 <div class="text-left">
-    <h1>Movie List:</h1>
     <table class="list-group-item">
-        @foreach (var movie in Model) { 
+        @foreach (var movie in Model)
+        {
             <tr>
                 <td>
                     <img src=@movie.ThumbnailUrl style="width:92px;height:140px;">
@@ -18,7 +15,7 @@
                 <td>
                     <a href="@movie.ImdbUrl" class="">@movie.Title</a>
                     <b> - (@movie.Year)</b><br />
-                    <button class="btn-outline-primary" onclick="deleteMovie(@movie.Id)">Remove</button>
+                    <button class="btn-outline-primary" onclick="addMovie('@movie.Title', @movie.Year, '@movie.ImdbUrl', '@movie.ThumbnailUrl')">Add to backlog</button>
                 </td>
             </tr>
         }

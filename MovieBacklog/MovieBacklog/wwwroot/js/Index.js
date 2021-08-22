@@ -11,18 +11,34 @@
     })
 }
 
+function addMovie(title, year, imdbUrl, thumbnailUrl) {
+    $.ajax({
+        url: "/Home/AddMovie",
+        method: "POST",
+        data: {
+            title: title,
+            year: year,
+            imdbUrl: imdbUrl,
+            thumbnailUrl: thumbnailUrl,
+        },
+        success: function (result) {
+            console.log("Add")
+        }
+    })
+}
+
 function searchMovie() {
 
     var movieTitle = document.getElementById("movieTitle").value;
 
     $.ajax({
-        url: "/Home/AddMovie",
+        url: "/Home/Search",
         method: "POST",
         data: {
             title: movieTitle
         },
         success: function (result) {
-            location.reload()
+            document.write(result)
         }
     })
 }

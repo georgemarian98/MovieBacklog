@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using MovieBacklog.Services;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System;
+using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,23 +25,27 @@ namespace Backlog.Controllers
             return View(moviesService.GetBacklog());
         }
 
-        [HttpDelete]
-        public void DeleteMovie(int Id)
+        [HttpPost]
+        public ActionResult Search([Bind("movieTitle")] string movieTitle)
         {
-            moviesService.RemoveMovie(Id);
+            var movies = ImdbApiCall(movieTitle);
+            return View(movies);
+        }
+
+        [HttpDelete]
+        public void DeleteMovie(int id)
+        {
+            moviesService.RemoveMovie(id);
         }
 
         [HttpPost]
-        public void AddMovie(string title)
+        public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl)
         {
-            var movies = ImdbApiCall(title);
-
-            moviesService.AddMovieToBacklog(movies[0]);
+            moviesService.AddMovieToBacklog(new MovieRecord(title, year, imdbUrl, thumbnailUrl));
         }
 
         private List<MovieRecord> ImdbApiCall(string title)
         {
-            title = title.Replace(" ", "%20");
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
             var request = new RestRequest(Method.GET);
             request.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
@@ -73,8 +77,7 @@ namespace Backlog.Controllers
 
             string thumbnailUrl = item["image"].Value<string>("url");
 
-
-            return new MovieRecord(title, year, imdbUrl, thumbnailUrl);
+            return (year == 0 || title == null || imdbUrl == null) ? null : new MovieRecord(title, year, imdbUrl, thumbnailUrl);
         }
     }
 }
