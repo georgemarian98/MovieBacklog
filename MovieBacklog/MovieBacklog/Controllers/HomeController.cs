@@ -29,7 +29,8 @@ namespace Backlog.Controllers
         [HttpPost]
         public ActionResult Search([Bind("movieTitle")] string movieTitle)
         {
-            var movies = ImdbApiCall(movieTitle);
+            var backlogMovies = moviesService.GetBacklog();
+            var movies = ImdbApiCall(movieTitle).Where(movie => backlogMovies.All(el => el.Title != movie.Title) == true);
             return View(movies);
         }
 
