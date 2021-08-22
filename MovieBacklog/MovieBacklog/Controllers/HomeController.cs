@@ -8,6 +8,7 @@ using System.Web;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using MovieBacklog.Data;
 
 namespace Backlog.Controllers
 {
@@ -41,7 +42,8 @@ namespace Backlog.Controllers
         [HttpPost]
         public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl)
         {
-            moviesService.AddMovieToBacklog(new MovieRecord(title, year, imdbUrl, thumbnailUrl));
+            MovieRecord newMovie = new MovieRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            moviesService.AddMovieToBacklog(newMovie);
         }
 
         private List<MovieRecord> ImdbApiCall(string title)
@@ -77,7 +79,8 @@ namespace Backlog.Controllers
 
             string thumbnailUrl = item["image"].Value<string>("url");
 
-            return (year == 0 || title == null || imdbUrl == null) ? null : new MovieRecord(title, year, imdbUrl, thumbnailUrl);
+            MovieRecord newMovie = new MovieRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            return (year == 0 || title == null || imdbUrl == null) ? null : newMovie;
         }
     }
 }
