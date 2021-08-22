@@ -12,6 +12,8 @@
 }
 
 function addMovie(title, year, imdbUrl, thumbnailUrl) {
+    var target = document.getElementById(title)
+
     $.ajax({
         url: "/Home/AddMovie",
         method: "POST",
@@ -23,12 +25,12 @@ function addMovie(title, year, imdbUrl, thumbnailUrl) {
         },
         success: function (result) {
             console.log("Add")
+            target.disabled = true
         }
     })
 }
 
 function searchMovie() {
-    //get user input
     var movieTitle = document.getElementById("movieTitle").value;
 
     $.ajax({
@@ -36,9 +38,6 @@ function searchMovie() {
         method: "POST",
         data: {
             title: movieTitle
-        },
-        success: function (result) {
-            document.write(result)
         }
     })
 }
