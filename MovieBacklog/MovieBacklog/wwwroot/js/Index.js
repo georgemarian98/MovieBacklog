@@ -26,6 +26,7 @@ function addMovie(title, year, imdbUrl, thumbnailUrl) {
         success: function (result) {
             console.log("Add")
             target.disabled = true
+            target.style.background = '#54f542';
         }
     })
 }
