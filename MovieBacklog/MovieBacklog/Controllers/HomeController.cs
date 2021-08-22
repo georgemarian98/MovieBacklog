@@ -76,8 +76,6 @@ namespace Backlog.Controllers
             int year = item.Value<int>("year");
             string title = item.Value<string>("title");
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
-
-
             string thumbnailUrl = item["image"].Value<string>("url");
 
             MovieRecord newMovie = new MovieRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
