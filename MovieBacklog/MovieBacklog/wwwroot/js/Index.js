@@ -28,7 +28,7 @@ function addMovie(title, year, imdbUrl, thumbnailUrl) {
 }
 
 function searchMovie() {
-
+    //get user input
     var movieTitle = document.getElementById("movieTitle").value;
 
     $.ajax({
