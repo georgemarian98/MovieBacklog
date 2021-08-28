@@ -12,7 +12,8 @@
 }
 
 function addMovie(title, year, imdbUrl, thumbnailUrl) {
-    var target = document.getElementById(title)
+    const buttonId = title+year
+    var target = document.getElementById(buttonId)
 
     $.ajax({
         url: "/Home/AddMovie",

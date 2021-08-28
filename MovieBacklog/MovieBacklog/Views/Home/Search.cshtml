@@ -15,7 +15,7 @@
                 <td>
                     <a href="@movie.ImdbUrl" class="">@movie.Title</a>
                     <b> - (@movie.Year)</b><br />
-                    <button id="@movie.Title" class="btn-outline-primary" onclick='addMovie("@movie.Title", @movie.Year, "@movie.ImdbUrl", "@movie.ThumbnailUrl")'>Add to backlog</button>
+                    <button id="@movie.Title@movie.Year" class="btn-outline-primary" onclick='addMovie("@movie.Title", @movie.Year, "@movie.ImdbUrl", "@movie.ThumbnailUrl")'>Add to backlog</button>
                 </td>
             </tr>
         }
