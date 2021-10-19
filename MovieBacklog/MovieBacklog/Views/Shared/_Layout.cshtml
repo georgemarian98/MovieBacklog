@@ -26,14 +26,14 @@
         </nav>
     </header>
     <div class="container">
-        <main role="main" class="pb-3">
+        <main role="main" class="pb-3 content-table">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2021 - MovieBacklog - <a asp-area="" asp-page="/Privacy">Privacy</a>
+            &copy; 2021 - MovieBacklog
         </div>
     </footer>
 
@@ -56,5 +56,9 @@
 
     .search-bar {
         padding-top: 5%;
+    }
+
+    .content-table {
+        padding-top: 6rem;
     }
 </style>
