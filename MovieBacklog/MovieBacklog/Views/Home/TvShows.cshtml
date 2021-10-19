@@ -1,0 +1,40 @@
+﻿@model IEnumerable<MovieBacklog.Models.MediaRecord>
+@{
+    ViewData["Title"] = "Home page";
+}
+
+@section scripts {
+    <script type="text/javascript" src="~/js/Index.js"></script>
+}
+
+<div class="text-left">
+    <h1>Movie List:</h1>
+    <table class="list-group-item css-serial">
+        @foreach (var movie in Model)
+        {
+            <tr>
+                <td></td>
+                <td>
+                    <img src=@movie.ThumbnailUrl style="width:92px;height:140px;">
+                </td>
+                <td>
+                    <a href="@movie.ImdbUrl" class="">@movie.Title</a>
+                    <b> - (@movie.Year)</b><br />
+                    <button class="btn-outline-primary" onclick="deleteMovie(@movie.Id)">Remove</button>
+                </td>
+            </tr>
+        }
+    </table>
+</div>
+
+<style>
+    /*adding row numbers through css*/
+    .css-serial {
+        counter-reset: serial-number; /* Set the serial number counter to 0 */
+    }
+
+        .css-serial td:first-child:before {
+            counter-increment: serial-number; /* Increment the serial number counter */
+            content: counter(serial-number); /* Display the counter */
+        }
+</style>
