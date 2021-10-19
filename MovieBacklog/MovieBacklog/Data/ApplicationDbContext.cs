@@ -1,4 +1,4 @@
-﻿using Backlog.Models;
+﻿using MovieBacklog.Models;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Backlog.Models
+namespace MovieBacklog.Models
 {
     public class MediaRecord
     {

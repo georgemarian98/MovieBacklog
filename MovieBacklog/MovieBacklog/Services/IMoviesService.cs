@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using Backlog.Models;
+using MovieBacklog.Models;
 
 namespace MovieBacklog.Services
 {
