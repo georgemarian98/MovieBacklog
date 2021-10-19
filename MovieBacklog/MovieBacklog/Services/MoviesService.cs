@@ -24,13 +24,13 @@ namespace MovieBacklog.Services
 
         public List<MediaRecord> GetBacklog()
         {
-            return applicationDb.Movies.ToList();
+            return applicationDb.Media.ToList();
         }
 
         public void RemoveMovie(int id)
         {
-            var movie = applicationDb.Movies.Find(id);
-            applicationDb.Movies.Remove(movie);
+            var movie = applicationDb.Media.Find(id);
+            applicationDb.Media.Remove(movie);
             applicationDb.SaveChanges();
         }
     }

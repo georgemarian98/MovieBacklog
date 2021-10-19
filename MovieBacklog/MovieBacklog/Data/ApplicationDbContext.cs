@@ -14,6 +14,6 @@ namespace MovieBacklog.Data
 
         }
 
-        public DbSet<MediaRecord> Movies { get; set; }
+        public DbSet<MediaRecord> Media { get; set; }
     }
 }
