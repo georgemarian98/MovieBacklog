@@ -43,11 +43,11 @@ namespace Backlog.Controllers
         [HttpPost]
         public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl)
         {
-            MovieRecord newMovie = new MovieRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
             moviesService.AddMovieToBacklog(newMovie);
         }
 
-        private List<MovieRecord> ImdbApiCall(string title)
+        private List<MediaRecord> ImdbApiCall(string title)
         {
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
             var request = new RestRequest(Method.GET);
@@ -58,7 +58,7 @@ namespace Backlog.Controllers
             return CreateMovieRecordsFromJson(response.Content);
         }
 
-        private List<MovieRecord> CreateMovieRecordsFromJson(string jsonContent)
+        private List<MediaRecord> CreateMovieRecordsFromJson(string jsonContent)
         {
             var json = JObject.Parse(jsonContent);
             var data = json["results"];
@@ -66,7 +66,7 @@ namespace Backlog.Controllers
             return data.Select(CreateMovieRecord).Where(el => el != null).ToList();
         }
 
-        private MovieRecord CreateMovieRecord(JToken item)
+        private MediaRecord CreateMovieRecord(JToken item)
         {
             if (item["image"] == null)
             {
@@ -78,7 +78,7 @@ namespace Backlog.Controllers
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
             string thumbnailUrl = item["image"].Value<string>("url");
 
-            MovieRecord newMovie = new MovieRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
             return (year == 0 || title == null || imdbUrl == null) ? null : newMovie;
         }
     }

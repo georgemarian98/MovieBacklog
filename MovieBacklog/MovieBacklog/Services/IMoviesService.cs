@@ -8,9 +8,9 @@ namespace MovieBacklog.Services
 {
     public interface IMoviesService
     {
-        public List<MovieRecord> GetBacklog();
+        public List<MediaRecord> GetBacklog();
 
-        public void AddMovieToBacklog(MovieRecord movie);
+        public void AddMovieToBacklog(MediaRecord movie);
 
         public void RemoveMovie(int id);
     }

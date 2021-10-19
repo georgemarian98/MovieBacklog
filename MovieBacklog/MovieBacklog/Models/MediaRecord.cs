@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace Backlog.Models
 {
-    public class MovieRecord
+    public class MediaRecord
     {
         public int Id { get; set; }
 

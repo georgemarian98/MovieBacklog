@@ -16,13 +16,13 @@ namespace MovieBacklog.Services
             this.applicationDb = applicationDb;
         }
 
-        public void AddMovieToBacklog(MovieRecord movie)
+        public void AddMovieToBacklog(MediaRecord movie)
         {
             applicationDb.Add(movie);
             applicationDb.SaveChanges();
         }
 
-        public List<MovieRecord> GetBacklog()
+        public List<MediaRecord> GetBacklog()
         {
             return applicationDb.Movies.ToList();
         }
