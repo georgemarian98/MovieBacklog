@@ -11,19 +11,14 @@
     })
 }
 
-function addMovie(title, year, imdbUrl, thumbnailUrl) {
-    const buttonId = title+year
+function addMovie(media) {
+    const buttonId = media.title + media.year
     var target = document.getElementById(buttonId)
 
     $.ajax({
         url: "/Home/AddMovie",
         method: "POST",
-        data: {
-            title: title,
-            year: year,
-            imdbUrl: imdbUrl,
-            thumbnailUrl: thumbnailUrl,
-        },
+        data: media,
         success: function (result) {
             console.log("Add")
             target.disabled = true
