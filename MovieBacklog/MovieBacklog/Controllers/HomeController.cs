@@ -82,7 +82,7 @@ namespace Backlog.Controllers
             string title = item.Value<string>("title");
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
             string thumbnailUrl = item["image"].Value<string>("url");
-            bool type = (item.Value<string>("titleType")) == "movie" ? true : false; 
+            bool type = item.Value<string>("titleType") == "movie"; 
 
             MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
             return (year == 0 || title == null || imdbUrl == null) ? null : newMovie;
