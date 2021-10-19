@@ -6,16 +6,23 @@
 
 <div class="text-left">
     <table class="list-group-item">
-        @foreach (var movie in Model)
+        @foreach (var media in Model)
         {
             <tr>
                 <td>
-                    <img src=@movie.ThumbnailUrl style="width:92px;height:140px;">
+                    <img src=@media.ThumbnailUrl style="width:92px;height:140px;">
                 </td>
                 <td>
-                    <a href="@movie.ImdbUrl" class="">@movie.Title</a>
-                    <b> - (@movie.Year)</b><br />
-                    <button id="@movie.Title@movie.Year" class="btn-outline-primary" onclick='addMovie({title: "@movie.Title", year: @movie.Year, imdbUrl: "@movie.ImdbUrl", thumbnailUrl: "@movie.ThumbnailUrl", isMovie: "@movie.IsMovie"})'>Add to backlog</button>
+                    <div>
+                        <a href="@media.ImdbUrl" class="">@media.Title</a>
+                        <b> - (@media.Year)</b><br />
+                        @if (media.IsMovie == false)
+                        {
+                            <b>Tv Show</b>
+                        }
+                    </div>
+                    
+                    <button id="@media.Title@media.Year" class="btn-outline-primary" onclick='addMovie({title: "@media.Title", year: @media.Year, imdbUrl: "@media.ImdbUrl", thumbnailUrl: "@media.ThumbnailUrl", isMovie: "@media.IsMovie"})'>Add to backlog</button>
                 </td>
             </tr>
         }
