@@ -25,6 +25,11 @@ namespace Backlog.Controllers
         {
             return View(moviesService.GetBacklog().Where(movie => movie.IsMovie == true));
         }
+        
+        public ActionResult TvShows()
+        {
+            return View(moviesService.GetBacklog().Where(movie => movie.IsMovie == false));
+        }
 
         [HttpPost]
         public ActionResult Search([Bind("movieTitle")] string movieTitle)
@@ -41,9 +46,9 @@ namespace Backlog.Controllers
         }
 
         [HttpPost]
-        public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl)
+        public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl, bool isMovie)
         {
-            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = isMovie };
             moviesService.AddMovieToBacklog(newMovie);
         }
 
@@ -77,8 +82,9 @@ namespace Backlog.Controllers
             string title = item.Value<string>("title");
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
             string thumbnailUrl = item["image"].Value<string>("url");
+            bool type = (item.Value<string>("titleType")) == "movie" ? true : false; 
 
-            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl };
+            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
             return (year == 0 || title == null || imdbUrl == null) ? null : newMovie;
         }
     }
