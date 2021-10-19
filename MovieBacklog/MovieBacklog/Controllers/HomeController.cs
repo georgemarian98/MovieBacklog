@@ -23,7 +23,7 @@ namespace Backlog.Controllers
 
         public ActionResult Index()
         {
-            return View(moviesService.GetBacklog());
+            return View(moviesService.GetBacklog().Where(movie => movie.IsMovie == true));
         }
 
         [HttpPost]

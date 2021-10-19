@@ -16,5 +16,7 @@ namespace MovieBacklog.Models
         public string ImdbUrl { get; set; }
 
         public int Year { get; set; }
+
+        public bool IsMovie { get; set; }
     }
 }
