@@ -1,5 +1,5 @@
 # MovieBacklog
-This project is a site for keeping track o f the movies that I want to watch.
+This project is a site for keeping track o f the movies and TV shows that I want to watch.
 
 Technologies used:
 * .Net
