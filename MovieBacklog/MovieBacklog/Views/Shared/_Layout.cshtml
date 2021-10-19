@@ -16,7 +16,7 @@
                 <a class="navbar-brand" asp-area="" asp-action="TvShows" asp-controller="Home">TV Shows</a>
 
                 <form asp-action="Search">
-                    <div class="form-group">
+                    <div class="form-group search-bar">
                         <input type="text" id="movieTitle" name="movieTitle"/>
                         <input type="submit" value="Search" class="btn btn-primary"/>
                     </div>
@@ -52,5 +52,9 @@
         top: 0;
         width: 100%;
         z-index: 1;
+    }
+
+    .search-bar {
+        padding-top: 5%;
     }
 </style>
