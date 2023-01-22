@@ -24,7 +24,8 @@ namespace MovieBacklog.Services
 
         public List<MediaRecord> GetBacklog()
         {
-            return applicationDb.Media.ToList();
+            //return applicationDb.Media.ToList();
+            return new List<MediaRecord>();
         }
 
         public void RemoveMovie(int id)
