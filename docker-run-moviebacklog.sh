@@ -1,31 +1,27 @@
-GREEN='\033[0;32m'
-RED='\033[0;31m'
-NC='\033[0m' # No Color
+GREEN_TEXT='\033[0;32m'
+RED_TEXT='\033[0;31m'
+NO_COLOR='\033[0m'
 
-printf "${GREEN}------------------------------STOP Container------------------------------${NC}\n"
+printf "${GREEN_TEXT}------------------------------STOP Container------------------------------${NO_COLOR}\n"
 docker stop moviebacklog
 
-echo $?
-
-printf "${GREEN}------------------------------REMOVE Container------------------------------${NC}\n"
+printf "\n${GREEN_TEXT}------------------------------REMOVE Container------------------------------${NO_COLOR}\n"
 docker rm moviebacklog
 
-echo $?
-
-printf "${GREEN}------------------------------BUILD Container------------------------------${NC}\n"
+printf "\n${GREEN_TEXT}------------------------------BUILD Container------------------------------${NO_COLOR}\n"
 docker build ./MovieBacklog -t movie_backlog_image
 
 if [ ! $? -eq 0 ]
 then
-    printf "${RED}[ERROR] Exit program due to unexpected errors from docker build command...${NC}\n"
+    printf "${RED_TEXT}[ERROR] Exit program due to unexpected errors from docker build command...${NO_COLOR}\n"
     exit 1
 fi
 
-printf "${GREEN}------------------------------RUN Container------------------------------${NC}\n"
+printf "\n${GREEN_TEXT}------------------------------RUN Container------------------------------${NO_COLOR}\n"
 docker run -d -p 8082:80 --name moviebacklog movie_backlog_image
 
 if [ ! $? -eq 0 ]
 then
-    printf "${RED}[ERROR] Exit program due to unexpected errors from docker run command...${NC}\n"
+    printf "${RED_TEXT}[ERROR] Exit program due to unexpected errors from docker run command...${NO_COLOR}\n"
     exit 1
 fi
