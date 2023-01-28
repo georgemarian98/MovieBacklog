@@ -1,5 +1,6 @@
 Migrations/
 .vs
+config/
 
 ###################
 # compiled source #
