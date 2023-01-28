@@ -1,0 +1,36 @@
+version: '3.7'
+
+services:
+  web:
+    container_name: 'moviebacklog'
+    image: 'aspnetcoreapp'
+    build:
+      context: .
+      dockerfile: MovieBacklog/Dockerfile
+    ports:
+     - "8082:80"
+    depends_on:
+     - "postgres"
+    networks:
+      - moviebacklog-network
+
+  postgres:
+    container_name: 'postgres'
+    image: postgres
+    restart: on-failure:5
+    ports: 
+        - 5432:5432
+    volumes:
+        - ./config/db_data:/var/lib/postgresql/data
+    env_file:
+        - ./config/.env
+    networks:
+      - moviebacklog-network
+
+networks:
+  moviebacklog-network:
+    driver: bridge
+
+volumes:
+  postgres:
+    driver: local
