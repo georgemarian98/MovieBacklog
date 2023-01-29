@@ -7,10 +7,10 @@ EXPOSE 5432
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["./MovieBacklog/MovieBacklog.csproj", "WebApplication1/"]
-RUN dotnet restore "WebApplication1/MovieBacklog.csproj"
-COPY . ./WebApplication1
-WORKDIR "/src/WebApplication1"
+COPY ["./MovieBacklog/MovieBacklog.csproj", "App/"]
+RUN dotnet restore "App/MovieBacklog.csproj"
+COPY . ./App
+WORKDIR "/src/App"
 RUN dotnet build "./MovieBacklog/MovieBacklog.csproj" -c Release -o /app/build
 
 FROM build AS publish
