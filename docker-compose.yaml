@@ -1,9 +1,9 @@
 version: '3.7'
 
 services:
-  web:
+  app:
     container_name: 'moviebacklog'
-    image: 'aspnetcoreapp'
+    image: 'moviebacklog_image'
     build:
       context: .
       dockerfile: MovieBacklog/Dockerfile
@@ -21,7 +21,7 @@ services:
     ports: 
         - 5432:5432
     volumes:
-        - ./config/db_data:/var/lib/postgresql/data
+        - /srv/dev-disk-by-uuid-db265fe4-0194-49be-9153-c00fa45159e6/postgres/db_data:/var/lib/postgresql/data
     env_file:
         - ./config/.env
     networks:
