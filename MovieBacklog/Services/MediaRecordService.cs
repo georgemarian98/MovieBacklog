@@ -7,18 +7,18 @@ using MovieBacklog.Data;
 
 namespace MovieBacklog.Services
 {
-    public class MoviesService : IMoviesService
+    public class MediaService : IMediaRecordService
     {
         private readonly ApplicationDbContext applicationDb;
 
-        public MoviesService(ApplicationDbContext applicationDb)
+        public MediaService(ApplicationDbContext applicationDb)
         {
             this.applicationDb = applicationDb;
         }
 
-        public void AddMovieToBacklog(MediaRecord movie)
+        public void AddMediaRecordToBacklog(MediaRecord media)
         {
-            applicationDb.Add(movie);
+            applicationDb.Add(media);
             applicationDb.SaveChanges();
         }
 
@@ -27,10 +27,10 @@ namespace MovieBacklog.Services
             return applicationDb.Media.ToList();
         }
 
-        public void RemoveMovie(int id)
+        public void RemoveMediaRecord(int id)
         {
-            var movie = applicationDb.Media.Find(id);
-            applicationDb.Media.Remove(movie);
+            var media = applicationDb.Media.Find(id);
+            applicationDb.Media.Remove(media);
             applicationDb.SaveChanges();
         }
     }

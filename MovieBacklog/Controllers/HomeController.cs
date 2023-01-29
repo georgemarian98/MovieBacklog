@@ -1,55 +1,51 @@
 ﻿using MovieBacklog.Models;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using MovieBacklog.Services;
 using Newtonsoft.Json.Linq;
 using RestSharp;
-using System.Web;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
-using MovieBacklog.Data;
 
 namespace Backlog.Controllers
 {
     public class HomeController : Controller
     {
-        private readonly IMoviesService moviesService;
+        private readonly IMediaRecordService mediaRecordService;
 
-        public HomeController(IMoviesService moviesService)
+        public HomeController(IMediaRecordService mediaRecordService)
         {
-            this.moviesService = moviesService;
+            this.mediaRecordService = mediaRecordService;
         }
 
         public ActionResult Index()
         {
-            return View(moviesService.GetBacklog().Where(movie => movie.IsMovie == true));
+            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true));
         }
         
         public ActionResult TvShows()
         {
-            return View(moviesService.GetBacklog().Where(movie => movie.IsMovie == false));
+            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false));
         }
 
         [HttpPost]
-        public ActionResult Search([Bind("movieTitle")] string movieTitle)
+        public ActionResult Search([Bind("mediaRecordTitle")] string mediaRecordTitle)
         {
-            var backlogMovies = moviesService.GetBacklog();
-            var movies = ImdbApiCall(movieTitle).Where(movie => backlogMovies.All(el => el.Title != movie.Title) == true);
-            return View(movies);
+            var mediaRecordBacklog = mediaRecordService.GetBacklog();
+            var foundMediaRcords = ImdbApiCall(mediaRecordTitle).Where(mediaRecord => mediaRecordBacklog.All(el => el.Title != mediaRecord.Title) == true);
+            return View(foundMediaRcords);
         }
 
         [HttpDelete]
-        public void DeleteMovie(int id)
+        public void DeleteMediaRecord(int id)
         {
-            moviesService.RemoveMovie(id);
+            mediaRecordService.RemoveMediaRecord(id);
         }
 
         [HttpPost]
-        public void AddMovie(string title, int year, string imdbUrl, string thumbnailUrl, bool isMovie)
+        public void AddMediaRecord(string title, int year, string imdbUrl, string thumbnailUrl, bool isMovie)
         {
-            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = isMovie };
-            moviesService.AddMovieToBacklog(newMovie);
+            MediaRecord newMediaRecord = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = isMovie };
+            mediaRecordService.AddMediaRecordToBacklog(newMediaRecord);
         }
 
         private List<MediaRecord> ImdbApiCall(string title)
@@ -60,18 +56,18 @@ namespace Backlog.Controllers
             request.AddHeader("x-rapidapi-key", "d5490fab4bmsh0bc23a740cc46a9p1969dejsnee359aef5d88");
             IRestResponse response = client.Execute(request);
 
-            return CreateMovieRecordsFromJson(response.Content);
+            return CreateMediaRecordsFromJson(response.Content);
         }
 
-        private List<MediaRecord> CreateMovieRecordsFromJson(string jsonContent)
+        private List<MediaRecord> CreateMediaRecordsFromJson(string jsonContent)
         {
             var json = JObject.Parse(jsonContent);
             var data = json["results"];
 
-            return data.Select(CreateMovieRecord).Where(el => el != null).ToList();
+            return data.Select(CreateNewMediaRecord).Where(el => el != null).ToList();
         }
 
-        private MediaRecord CreateMovieRecord(JToken item)
+        private MediaRecord CreateNewMediaRecord(JToken item)
         {
             if (item["image"] == null)
             {
@@ -84,8 +80,8 @@ namespace Backlog.Controllers
             string thumbnailUrl = item["image"].Value<string>("url");
             bool type = item.Value<string>("titleType") == "movie"; 
 
-            MediaRecord newMovie = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
-            return (year == 0 || title == null || imdbUrl == null) ? null : newMovie;
+            MediaRecord newMediaRecord = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
+            return (year == 0 || title == null || imdbUrl == null) ? null : newMediaRecord;
         }
     }
 }

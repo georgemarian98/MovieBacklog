@@ -6,12 +6,12 @@ using MovieBacklog.Models;
 
 namespace MovieBacklog.Services
 {
-    public interface IMoviesService
+    public interface IMediaRecordService
     {
         public List<MediaRecord> GetBacklog();
 
-        public void AddMovieToBacklog(MediaRecord movie);
+        public void AddMediaRecordToBacklog(MediaRecord movie);
 
-        public void RemoveMovie(int id);
+        public void RemoveMediaRecord(int id);
     }
 }

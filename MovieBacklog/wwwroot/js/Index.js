@@ -1,6 +1,6 @@
-﻿function deleteMovie(id) {
+﻿function deleteMediaRecord(id) {
     $.ajax({
-        url: "/Home/DeleteMovie",
+        url: "/Home/DeleteMediaRecord",
         method: "DELETE",
         data: {
             id: id
@@ -11,30 +11,30 @@
     })
 }
 
-function addMovie(media) {
-    const buttonId = media.title + media.year
+function addMediaRecord(mediaRecord) {
+    const buttonId = mediaRecord.title + mediaRecord.year
     var target = document.getElementById(buttonId)
 
     $.ajax({
-        url: "/Home/AddMovie",
+        url: "/Home/AddMediaRecord",
         method: "POST",
-        data: media,
+        data: mediaRecord,
         success: function (result) {
-            console.log("Add")
+            console.log("Add new media record")
             target.disabled = true
             target.style.background = '#54f542';
         }
     })
 }
 
-function searchMovie() {
-    var movieTitle = document.getElementById("movieTitle").value;
+function searchMediaRecord() {
+    var mediaRecordTitle = document.getElementById("mediaRecordTitle").value;
 
     $.ajax({
         url: "/Home/Search",
         method: "POST",
         data: {
-            title: movieTitle
+            title: mediaRecordTitle
         }
     })
 }
