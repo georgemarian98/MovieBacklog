@@ -17,7 +17,7 @@ namespace Backlog.Controllers
             this.mediaRecordService = mediaRecordService;
         }
 
-        public ActionResult Index()
+        public ActionResult Movies()
         {
             return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true));
         }
