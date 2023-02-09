@@ -18,5 +18,7 @@ namespace MovieBacklog.Models
         public int Year { get; set; }
 
         public bool IsMovie { get; set; }
+
+        public string AddedBy { get; set; }
     }
 }
