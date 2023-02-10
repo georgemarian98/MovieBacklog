@@ -5,12 +5,14 @@ using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
+using MovieBacklog.Models.ViewModels;
 
 namespace Backlog.Controllers
 {
     public class HomeController : Controller
     {
         private readonly IMediaRecordService mediaRecordService;
+        private static readonly UsersViewModel user = new();
 
         public HomeController(IMediaRecordService mediaRecordService)
         {
@@ -19,19 +21,36 @@ namespace Backlog.Controllers
 
         public ActionResult Movies()
         {
-            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true));
+            ViewBag.ItemTypesSelectList = user.AllUsers;
+
+            var list = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true && mediaRecord.AddedBy == user.CurrentUser);
+            return View(list);
         }
         
         public ActionResult TvShows()
         {
-            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false));
+            ViewBag.ItemTypesSelectList = user.AllUsers;
+
+            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false && mediaRecord.AddedBy == user.CurrentUser));
+        }
+
+        [HttpPost]
+        public ActionResult Users(string newUser)
+        {
+            user.CurrentUser = newUser;
+            return RedirectToAction("Movies");
         }
 
         [HttpPost]
         public ActionResult Search([Bind("mediaRecordTitle")] string mediaRecordTitle)
         {
+            ViewBag.ItemTypesSelectList = user.AllUsers;
+
             var mediaRecordBacklog = mediaRecordService.GetBacklog();
-            var foundMediaRcords = ImdbApiCall(mediaRecordTitle).Where(mediaRecord => mediaRecordBacklog.All(el => el.Title != mediaRecord.Title) == true);
+            var foundMediaRcords = ImdbApiCall(mediaRecordTitle)
+                .Where(mediaRecord => mediaRecordBacklog
+                .Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title && mediaRecordBacklog.AddedBy == user.CurrentUser) == false);
+
             return View(foundMediaRcords);
         }
 
@@ -44,7 +63,15 @@ namespace Backlog.Controllers
         [HttpPost]
         public void AddMediaRecord(string title, int year, string imdbUrl, string thumbnailUrl, bool isMovie)
         {
-            MediaRecord newMediaRecord = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = isMovie };
+            MediaRecord newMediaRecord = new() { 
+                Title = title, 
+                Year = year, 
+                ImdbUrl = imdbUrl, 
+                ThumbnailUrl = thumbnailUrl, 
+                IsMovie = isMovie, 
+                AddedBy = user.CurrentUser 
+            };
+
             mediaRecordService.AddMediaRecordToBacklog(newMediaRecord);
         }
 
@@ -78,7 +105,8 @@ namespace Backlog.Controllers
             string title = item.Value<string>("title");
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
             string thumbnailUrl = item["image"].Value<string>("url");
-            bool type = item.Value<string>("titleType") == "movie"; 
+            bool type = item.Value<string>("titleType") == "movie";
+            string titleType = item.Value<string>("titleType"); //TODO: Keep track for each media type
 
             MediaRecord newMediaRecord = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
             return (year == 0 || title == null || imdbUrl == null) ? null : newMediaRecord;

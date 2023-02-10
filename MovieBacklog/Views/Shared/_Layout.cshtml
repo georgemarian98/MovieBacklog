@@ -12,13 +12,17 @@
     <header>
         <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3 header-fixed">
             <div class="container">
+
+                <select asp-items="ViewBag.ItemTypesSelectList" id="usersList">
+                </select>
+
                 <a class="navbar-brand" asp-area="" asp-action="Movies" asp-controller="Home">Movie Backlog</a>
                 <a class="navbar-brand" asp-area="" asp-action="TvShows" asp-controller="Home">TV Shows</a>
 
                 <form asp-action="Search">
                     <div class="form-group search-bar">
-                        <input type="text" id="mediaRecordTitle" name="mediaRecordTitle"/>
-                        <input type="submit" value="Search" class="btn btn-primary"/>
+                        <input type="text" id="mediaRecordTitle" name="mediaRecordTitle" />
+                        <input type="submit" value="Search" class="btn btn-primary" />
                     </div>
                 </form>
 
