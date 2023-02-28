@@ -6,4 +6,4 @@ Technologies used:
 * RestAPI for quering IMDB databse
 * PostgresDB
 
-The project is deployed with Docker on Heroku: https://moviebacklog.herokuapp.com/
+The project is currently running locally on my server but I'm planning to expose the aplication to used it outside my network
