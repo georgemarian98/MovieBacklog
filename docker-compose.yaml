@@ -8,30 +8,31 @@ services:
       context: .
       dockerfile: MovieBacklog/Dockerfile
     restart: unless-stopped
-    ports:
-     - "8082:80"
+    # Port will be proxied by nginx, so no need to expose it here
+    # ports:
+    #  - "8082:80"
     depends_on:
      - "postgres"
     networks:
-      - moviebacklog-network
+      - backend
+      - frontend
 
   postgres:
     container_name: 'postgres'
     image: postgres:15
     restart: unless-stopped
-    ports: 
-        - 5432:5432
+    # Internal port only, no need to expose it
+    # ports: 
+    #     - 5432:5432
     volumes:
         - /srv/dev-disk-by-uuid-db265fe4-0194-49be-9153-c00fa45159e6/postgres/db_data:/var/lib/postgresql/data
     env_file:
         - ./config/.env
     networks:
-      - moviebacklog-network
+      - backend
 
 networks:
-  moviebacklog-network:
-    driver: bridge
-
-volumes:
-  postgres:
-    driver: local
+  backend:
+    external: true
+  frontend:
+    external: true
