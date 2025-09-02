@@ -21,7 +21,8 @@ namespace MovieBacklog.Models.ViewModels
         public UsersViewModel()
         {
             AllUsers = new List<SelectListItem>();
-            foreach (var user in users) AllUsers.Add(new SelectListItem { Text = user, Value = user });
+            foreach (var user in users) 
+                AllUsers.Add(new SelectListItem { Text = user, Value = user });
         }
     }
 }

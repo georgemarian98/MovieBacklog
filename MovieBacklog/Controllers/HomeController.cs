@@ -41,6 +41,12 @@ namespace Backlog.Controllers
             return RedirectToAction("Movies");
         }
 
+        [HttpGet]
+        public JsonResult CurrentUser()
+        {
+            return Json(user.CurrentUser);
+        }
+
         [HttpPost]
         public ActionResult Search([Bind("mediaRecordTitle")] string mediaRecordTitle)
         {
@@ -48,8 +54,8 @@ namespace Backlog.Controllers
 
             var mediaRecordBacklog = mediaRecordService.GetBacklog();
             var foundMediaRcords = ImdbApiCall(mediaRecordTitle)
-                .Where(mediaRecord => mediaRecordBacklog
-                .Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title && mediaRecordBacklog.AddedBy == user.CurrentUser) == false);
+                .Where(mediaRecord => 
+                mediaRecordBacklog.Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title && mediaRecordBacklog.AddedBy == user.CurrentUser) == false);
 
             return View(foundMediaRcords);
         }

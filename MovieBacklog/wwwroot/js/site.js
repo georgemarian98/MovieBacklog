@@ -5,6 +5,15 @@
 
 const usersList = document.getElementById("usersList")
 
+$.ajax({
+    url: "/Home/CurrentUser",
+    method: "GET",
+    success: function (result) {
+        usersList.value = result;
+        console.log("Change user to ", result)
+    }
+})
+
 usersList.onchange = function () {
     var value = usersList.value;
     changeUser(value);
@@ -18,5 +27,7 @@ function changeUser(user) {
         success: function (result) {
             console.log("Change user to ", user)
         }
-    })
+    }).done(function () {
+        location.reload();
+    });
 }
