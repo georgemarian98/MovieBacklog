@@ -12,18 +12,14 @@ env:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-20.04
+
     steps:
     - uses: actions/checkout@v2
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: 5.0.x 
-
-    - name: Install libssl1.1
-      run: |
-        sudo apt-get update
-        sudo apt-get install -y libssl1.1 || sudo apt-get install -y libssl1.0.0
 
     - name: Restore dependencies
       run: dotnet restore
