@@ -15,7 +15,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <img src=@show.ThumbnailUrl style="width:92px;height:140px;">
+                    <img src=@show.ThumbnailUrl style="width:92px;height:140px;" onerror="updateThumbnail(this, @show.Id)">
                 </td>
                 <td>
                     <a href="@show.ImdbUrl" class="">@show.Title</a>
@@ -33,8 +33,8 @@
         counter-reset: serial-number; /* Set the serial number counter to 0 */
     }
 
-        .css-serial td:first-child:before {
-            counter-increment: serial-number; /* Increment the serial number counter */
-            content: counter(serial-number); /* Display the counter */
-        }
+    .css-serial td:first-child:before {
+        counter-increment: serial-number; /* Increment the serial number counter */
+        content: counter(serial-number); /* Display the counter */
+    }
 </style>

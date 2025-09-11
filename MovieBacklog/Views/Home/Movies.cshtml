@@ -15,7 +15,7 @@
             <tr>
                 <td></td>
                 <td>
-                    <img src=@movie.ThumbnailUrl style="width:92px;height:140px;">
+                    <img src=@movie.ThumbnailUrl style="width:92px;height:140px;" onerror="updateThumbnail(this, @movie.Id)">
                 </td>
                 <td>
                     <a href="@movie.ImdbUrl" class="">@movie.Title</a>

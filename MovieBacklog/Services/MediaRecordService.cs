@@ -31,5 +31,16 @@ namespace MovieBacklog.Services
             applicationDb.Media.Remove(media);
             applicationDb.SaveChanges();
         }
+
+        public MediaRecord GetMediaRecord(int id)
+        {
+            return applicationDb.Media.Find(id);
+        }
+
+        public void UpdateMediaRecord(MediaRecord record)
+        {
+            applicationDb.Media.Update(record);
+            applicationDb.SaveChanges();
+        }
     }
 }

@@ -13,5 +13,9 @@ namespace MovieBacklog.Services
         public void AddMediaRecordToBacklog(MediaRecord movie);
 
         public void RemoveMediaRecord(int id);
+
+        public MediaRecord GetMediaRecord(int id);
+
+        public void UpdateMediaRecord(MediaRecord record);
     }
 }

@@ -1,4 +1,17 @@
-﻿function deleteMediaRecord(id) {
+﻿function updateThumbnail(img, recordId) {
+    $.ajax({
+        url: "/Home/UpdateRecord",
+        method: "POST",
+        data: {
+            id: recordId
+        },
+        success: function (result) {
+            img.src = result
+        }
+    })
+}
+
+function deleteMediaRecord(id) {
     $.ajax({
         url: "/Home/DeleteMediaRecord",
         method: "DELETE",

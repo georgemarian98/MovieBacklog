@@ -6,6 +6,7 @@ using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
 using MovieBacklog.Models.ViewModels;
+using System.Threading;
 
 namespace Backlog.Controllers
 {
@@ -23,15 +24,16 @@ namespace Backlog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var list = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true && mediaRecord.AddedBy == user.CurrentUser);
-            return View(list);
+            var movies = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true && mediaRecord.AddedBy == user.CurrentUser);
+            return View(movies);
         }
         
         public ActionResult TvShows()
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            return View(mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false && mediaRecord.AddedBy == user.CurrentUser));
+            var shows = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false && mediaRecord.AddedBy == user.CurrentUser);
+            return View(shows);
         }
 
         [HttpPost]
@@ -79,6 +81,43 @@ namespace Backlog.Controllers
             };
 
             mediaRecordService.AddMediaRecordToBacklog(newMediaRecord);
+        }
+
+        [HttpPost]
+        public JsonResult UpdateRecord(int id)
+        {
+            MediaRecord record = mediaRecordService.GetMediaRecord(id);
+            string titleId = record.ImdbUrl.Substring("https://www.imdb.com/title/".Length).Trim('/');
+            JObject jsonObject = new();
+
+            // RapidaPI limits to just 5 requests per second. Sometime it is not enough
+            for (int attempts = 0; attempts < 5; ++attempts)
+            {
+                var imdbClient = new RestClient($"https://imdb8.p.rapidapi.com/title/v2/get-details?tconst={titleId}");
+                var imdbRequest = new RestRequest(Method.GET);
+                imdbRequest.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
+                imdbRequest.AddHeader("x-rapidapi-key", "d5490fab4bmsh0bc23a740cc46a9p1969dejsnee359aef5d88");
+                IRestResponse imdbResponse = imdbClient.Execute(imdbRequest);
+
+                if (imdbResponse.IsSuccessful)
+                {
+                    jsonObject = JObject.Parse(imdbResponse.Content);
+                    break;
+                }
+
+                if (imdbResponse.StatusCode == System.Net.HttpStatusCode.TooManyRequests)
+                {
+                    Thread.Sleep(1000);
+                    continue;
+                }
+
+                throw new System.Exception($"IMDB API error: {imdbResponse.StatusCode} - {imdbResponse.Content}");
+            }
+
+            record.ThumbnailUrl = jsonObject["data"]["title"]["primaryImage"].Value<string>("url");
+            mediaRecordService.UpdateMediaRecord(record);
+
+            return Json(record.ThumbnailUrl);
         }
 
         private List<MediaRecord> ImdbApiCall(string title)
