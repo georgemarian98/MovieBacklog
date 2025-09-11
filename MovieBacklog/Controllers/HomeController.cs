@@ -90,13 +90,13 @@ namespace Backlog.Controllers
             string titleId = record.ImdbUrl.Substring("https://www.imdb.com/title/".Length).Trim('/');
             JObject jsonObject = new();
 
-            // RapidaPI limits to just 5 requests per second. Sometime it is not enough
+            // RapidAPI limits to just 5 requests per second. Sometime it is not enough
             for (int attempts = 0; attempts < 5; ++attempts)
             {
                 var imdbClient = new RestClient($"https://imdb8.p.rapidapi.com/title/v2/get-details?tconst={titleId}");
                 var imdbRequest = new RestRequest(Method.GET);
                 imdbRequest.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
-                imdbRequest.AddHeader("x-rapidapi-key", "d5490fab4bmsh0bc23a740cc46a9p1969dejsnee359aef5d88");
+                imdbRequest.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
                 IRestResponse imdbResponse = imdbClient.Execute(imdbRequest);
 
                 if (imdbResponse.IsSuccessful)
@@ -125,7 +125,7 @@ namespace Backlog.Controllers
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
             var request = new RestRequest(Method.GET);
             request.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
-            request.AddHeader("x-rapidapi-key", "d5490fab4bmsh0bc23a740cc46a9p1969dejsnee359aef5d88");
+            request.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
             IRestResponse response = client.Execute(request);
 
             return CreateMediaRecordsFromJson(response.Content);
