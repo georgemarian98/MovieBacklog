@@ -6,4 +6,7 @@ Technologies used:
 * RestAPI for quering IMDB databse
 * PostgresDB
 
-Must create the config/.env file with `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` variables
+Must create the .env file with `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER`, `POSTGRES_PASSWORD`, `POSTGRES_DB` and `RAPIDAPI_KEY` variables
+
+In order to build the project run:
+`docker-compose build app`
