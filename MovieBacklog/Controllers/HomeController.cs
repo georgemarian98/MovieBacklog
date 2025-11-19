@@ -8,7 +8,7 @@ using System.Linq;
 using MovieBacklog.Models.ViewModels;
 using System.Threading;
 
-namespace Backlog.Controllers
+namespace MovieBacklog.Controllers
 {
     public class HomeController : Controller
     {

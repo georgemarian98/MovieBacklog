@@ -8,7 +8,7 @@ using MovieBacklog.Data;
 using MovieBacklog.Services;
 using System;
 
-namespace Backlog
+namespace MovieBacklog
 {
     public class Startup
     {
