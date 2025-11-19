@@ -22,7 +22,7 @@ namespace MovieBacklog.Services
 
         public List<MediaRecord> GetBacklog()
         {
-            return applicationDb.Media.ToList();
+            return applicationDb.Media.OrderBy(media => media.Id).ToList();
         }
 
         public void RemoveMediaRecord(int id)
