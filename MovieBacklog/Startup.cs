@@ -6,6 +6,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using MovieBacklog.Data;
 using MovieBacklog.Services;
+using System;
 
 namespace Backlog
 {
@@ -21,7 +22,9 @@ namespace Backlog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(Configuration.GetConnectionString("PostgresDocker")));
+            string postgresConnectionString = Environment.ExpandEnvironmentVariables(Configuration.GetConnectionString("PostgresDocker"));
+
+            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(postgresConnectionString));
             services.AddRazorPages();
             services.AddScoped<IMediaRecordService, MediaService>();
         }

@@ -13,6 +13,11 @@ services:
     #  - "8082:80"
     environment:
       - RAPIDAPI_KEY
+      - POSTGRES_HOST
+      - POSTGRES_PORT
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - POSTGRES_DB
     depends_on:
      - "postgres"
     networks:

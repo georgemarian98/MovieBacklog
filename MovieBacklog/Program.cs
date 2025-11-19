@@ -15,10 +15,8 @@ namespace Backlog
            Host.CreateDefaultBuilder(args)
                .ConfigureWebHostDefaults(webBuilder =>
                {
-                   var port = Environment.GetEnvironmentVariable("PORT");
-
                    webBuilder.UseStartup<Startup>()
-                   .UseUrls("http://*:" + port);
+                             .UseUrls($"http://*:{Environment.GetEnvironmentVariable("PORT")}");
                });
     }
 }
