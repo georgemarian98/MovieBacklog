@@ -2,6 +2,7 @@
 using System.Linq;
 using MovieBacklog.Models;
 using MovieBacklog.Data;
+using System.Text.Json;
 
 namespace MovieBacklog.Services
 {
@@ -41,6 +42,42 @@ namespace MovieBacklog.Services
         {
             applicationDb.Media.Update(record);
             applicationDb.SaveChanges();
+        }
+
+        public bool ExportBacklogToJson(string filePath)
+        {
+            if (filePath == null)
+            {
+                return false;
+            }
+
+            string jsonOutput = JsonSerializer.Serialize(applicationDb.Media);
+
+            System.IO.File.WriteAllText(filePath, jsonOutput);
+            return true;
+        }
+
+        public bool ImportBacklogFromJson(string filePath)
+        {
+            if (System.IO.File.Exists(filePath) == false)
+            {
+                return false;
+            }
+
+            string jsonInput = System.IO.File.ReadAllText(filePath);
+            var mediaRecords = JsonSerializer.Deserialize<List<MediaRecord>>(jsonInput);
+
+            // Remove all existing media records
+            var existing = applicationDb.Media.ToList();
+            if (existing.Any())
+            {
+                applicationDb.Media.RemoveRange(existing);
+            }
+
+            applicationDb.Media.AddRange(mediaRecords);
+            applicationDb.SaveChanges();
+
+            return true;
         }
     }
 }

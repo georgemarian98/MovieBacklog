@@ -17,5 +17,11 @@ namespace MovieBacklog.Services
         public MediaRecord GetMediaRecord(int id);
 
         public void UpdateMediaRecord(MediaRecord record);
+
+        // Export the entire backlog to a JSON file
+        public bool ExportBacklogToJson(string filePath);
+
+        // Import backlog from a JSON file. Warning: this will erase the existing backlog!
+        public bool ImportBacklogFromJson(string filePath);
     }
 }
