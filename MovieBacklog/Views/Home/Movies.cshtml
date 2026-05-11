@@ -1,40 +1,32 @@
 ﻿@model IEnumerable<MovieBacklog.Models.MediaRecord>
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "Movies";
 }
 
 @section scripts {
     <script type="text/javascript" src="~/js/Index.js"></script>
 }
 
-<div class="text-left">
-    <h1>Movie List:</h1>
-    <table class="list-group-item css-serial" >
-        @foreach (var movie in Model)
-        {
-            <tr>
-                <td></td>
-                <td>
-                    <img src=@movie.ThumbnailUrl style="width:92px;height:140px;" onerror="updateThumbnail(this, @movie.Id)">
-                </td>
-                <td>
-                    <a href="@movie.ImdbUrl" class="">@movie.Title</a>
-                    <b> - (@movie.Year)</b><br />
-                    <button class="btn-outline-primary" onclick="deleteMediaRecord(@movie.Id)">Remove</button>
-                </td>
-            </tr>
-        }
-    </table>
+<div class="mb-3">
+    <h2 class="mb-0">Movie List</h2>
+    <small class="text-muted">Your backlog</small>
 </div>
 
-<style>
-    /*adding row numbers through css*/
-    .css-serial {
-        counter-reset: serial-number; /* Set the serial number counter to 0 */
+<div class="row">
+    @foreach (var movie in Model)
+    {
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <img src="@movie.ThumbnailUrl" alt="@movie.Title" class="card-img-top" loading="lazy" decoding="async" onerror="updateThumbnail(this, @movie.Id)" />
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mb-1">@movie.Title</h5>
+                    <p class="card-text text-muted mb-2">@movie.Year</p>
+                    <div class="controls mt-auto">
+                        <a href="@movie.ImdbUrl" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">IMDB</a>
+                        <button class="btn btn-sm btn-danger" onclick="deleteMediaRecord(@movie.Id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-
-    .css-serial td:first-child:before {
-        counter-increment: serial-number; /* Increment the serial number counter */
-        content: counter(serial-number); /* Display the counter */
-    }
-</style>
+</div>

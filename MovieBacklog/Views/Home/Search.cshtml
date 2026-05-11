@@ -4,27 +4,42 @@
     <script src="~/js/Index.js" type="text/javascript"></script>
 }
 
-<div class="text-left">
-    <table class="list-group-item">
-        @foreach (var media in Model)
-        {
-            <tr>
-                <td>
-                    <img src=@media.ThumbnailUrl style="width:92px;height:140px;">
-                </td>
-                <td>
-                    <div>
-                        <a href="@media.ImdbUrl" class="">@media.Title</a>
-                        <b> - (@media.Year)</b><br />
-                        @if (media.IsMovie == false)
-                        {
-                            <b>Tv Show</b>
+<div class="mb-3">
+    <h2 class="mb-0">Search Results</h2>
+</div>
+
+<div class="row">
+    @foreach (var media in Model)
+    {
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <img src="@media.ThumbnailUrl" alt="@media.Title" class="card-img-top" loading="lazy" decoding="async" />
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mb-1">@media.Title</h5>
+                    <p class="card-text text-muted mb-2">
+                        @media.Year
+                        @if(media.IsMovie==false){
+                            <span class="badge badge-tv ms-2">TV</span>
                         }
+                    </p>
+
+                    <div class="controls mt-auto">
+                        <a href="@media.ImdbUrl" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">IMDB</a>
+
+                        <!-- Use data-* attributes to avoid JS escaping problems and ensure boolean is emitted as lowercase -->
+                        <button class="btn btn-sm btn-success"
+                                type="button"
+                                data-title="@media.Title"
+                                data-year="@media.Year"
+                                data-imdb="@media.ImdbUrl"
+                                data-thumb="@media.ThumbnailUrl"
+                                data-ismovie="@(media.IsMovie.ToString().ToLower())"
+                                onclick="addMediaRecordFromButton(this)">
+                            Add to backlog
+                        </button>
                     </div>
-                    
-                    <button id="@media.Title@media.Year" class="btn-outline-primary" onclick='addMediaRecord({title: "@media.Title", year: @media.Year, imdbUrl: "@media.ImdbUrl", thumbnailUrl: "@media.ThumbnailUrl", isMovie: "@media.IsMovie"})'>Add to backlog</button>
-                </td>
-            </tr>
-        }
-    </table>
+                </div>
+            </div>
+        </div>
+    }
 </div>

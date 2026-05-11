@@ -1,40 +1,35 @@
 ﻿@model IEnumerable<MovieBacklog.Models.MediaRecord>
 @{
-    ViewData["Title"] = "Home page";
+    ViewData["Title"] = "TV Shows";
 }
 
 @section scripts {
     <script type="text/javascript" src="~/js/Index.js"></script>
 }
 
-<div class="text-left">
-    <h1>Tv Shows:</h1>
-    <table class="list-group-item css-serial">
-        @foreach (var show in Model)
-        {
-            <tr>
-                <td></td>
-                <td>
-                    <img src=@show.ThumbnailUrl style="width:92px;height:140px;" onerror="updateThumbnail(this, @show.Id)">
-                </td>
-                <td>
-                    <a href="@show.ImdbUrl" class="">@show.Title</a>
-                    <b> - (@show.Year)</b><br />
-                    <button class="btn-outline-primary" onclick="deleteMediaRecord(@show.Id)">Remove</button>
-                </td>
-            </tr>
-        }
-    </table>
+<div class="mb-3">
+    <h2 class="mb-0">TV Shows</h2>
+    <small class="text-muted">Your backlog</small>
 </div>
 
-<style>
-    /*adding row numbers through css*/
-    .css-serial {
-        counter-reset: serial-number; /* Set the serial number counter to 0 */
+<div class="row">
+    @foreach (var show in Model)
+    {
+        <div class="col-6 col-sm-6 col-md-4 col-lg-3 mb-4">
+            <div class="card h-100">
+                <img src="@show.ThumbnailUrl" alt="@show.Title" class="card-img-top" loading="lazy" decoding="async" onerror="updateThumbnail(this, @show.Id)" />
+                <div class="card-body d-flex flex-column">
+                    <h5 class="card-title mb-1">@show.Title</h5>
+                    <p class="card-text text-muted mb-2">
+                        @show.Year
+                        <span class="badge badge-tv ms-2">TV</span>
+                    </p>
+                    <div class="controls mt-auto">
+                        <a href="@show.ImdbUrl" class="btn btn-sm btn-outline-primary" target="_blank" rel="noopener">IMDB</a>
+                        <button class="btn btn-sm btn-danger" onclick="deleteMediaRecord(@show.Id)">Remove</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     }
-
-    .css-serial td:first-child:before {
-        counter-increment: serial-number; /* Increment the serial number counter */
-        content: counter(serial-number); /* Display the counter */
-    }
-</style>
+</div>
