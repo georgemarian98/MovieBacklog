@@ -14,7 +14,7 @@ namespace MovieBacklog.Models.ViewModels
             "Rebeka"
         };
 
-        public string CurrentUser { get; set; } = "Rebeka";
+        public string CurrentUser { get; set; } = "George";
 
         public List<SelectListItem> AllUsers;
 
