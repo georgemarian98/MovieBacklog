@@ -98,13 +98,19 @@ body {
   box-shadow: 0 .25rem .75rem rgba(0,0,0,0.05);
 }
 
+/* ensure collapsed navbar content renders above page content */
+.navbar-collapse {
+  position: relative;
+  z-index: 1050;
+}
+
 /* brand */
 .site-logo {
   width: 40px;
   height: 40px;
   object-fit: cover;
   border-radius: 6px;
-  margin-right: 0.6rem; /* keep logo separated from text */
+  margin-right: 0.6rem;
 }
 .brand-text {
   font-weight: 600;
@@ -112,7 +118,7 @@ body {
   color: #222;
 }
 
-/* nav link spacing so items are not glued together */
+/* nav link spacing */
 .nav-left .nav-link {
   padding-left: 0.55rem;
   padding-right: 0.55rem;
@@ -120,18 +126,16 @@ body {
   color: #495057;
 }
 
-/* center-constrained search wrapper */
+/* center-constrained search wrapper (interactive now) */
 .navbar-search-wrapper {
   display: flex;
   justify-content: center;
   align-items: center;
   flex: 1 1 auto;
-  pointer-events: none; /* when collapsed, prevent layout issues, form inside will be interactive */
 }
 .navbar-search-wrapper .navbar-search {
-  pointer-events: auto;
   width: 100%;
-  max-width: 540px; /* constraint so it doesn't stretch */
+  max-width: 540px;
   min-width: 260px;
 }
 
@@ -258,3 +262,43 @@ a {
   background: transparent;
   color: var(--muted);
 }
+
+/* Mobile collapse visibility and stacking fixes */
+@media (max-width: 991.98px) {
+  /* Ensure collapsed panel sits over content and is visible */
+  .navbar-collapse {
+    position: absolute;
+    left: 0;
+    right: 0;
+    top: 100%;
+    background: #fff;
+    padding: .6rem 1rem;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+    z-index: 1090; /* above header and page content */
+  }
+
+  /* Keep expected collapse display behavior; show when `.show` is present */
+  .navbar-collapse.collapse {
+    display: none;
+  }
+  .navbar-collapse.collapse.show {
+    display: block !important;
+  }
+
+  /* Space items in the collapsed menu */
+  .navbar-collapse .nav-left {
+    flex-direction: column;
+    gap: .25rem;
+  }
+  .navbar-collapse .navbar-search-wrapper {
+    margin-top: .5rem;
+    margin-bottom: .5rem;
+  }
+  .navbar-collapse .navbar-user-select {
+    width: 100%;
+    margin-top: .25rem;
+  }
+}
+
+/* keep the rest of your existing rules intact */
+/* ...existing CSS continues below (no changes required) */
