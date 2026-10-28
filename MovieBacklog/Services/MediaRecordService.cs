@@ -44,19 +44,6 @@ namespace MovieBacklog.Services
             applicationDb.SaveChanges();
         }
 
-        public bool ExportBacklogToJson(string filePath)
-        {
-            if (filePath == null)
-            {
-                return false;
-            }
-
-            string jsonOutput = JsonSerializer.Serialize(applicationDb.Media);
-
-            System.IO.File.WriteAllText(filePath, jsonOutput);
-            return true;
-        }
-
         public bool ImportBacklogFromJson(string filePath)
         {
             if (System.IO.File.Exists(filePath) == false)

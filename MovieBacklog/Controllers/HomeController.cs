@@ -1,11 +1,12 @@
-﻿using MovieBacklog.Models;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
+using MovieBacklog.Models;
+using MovieBacklog.Models.ViewModels;
 using MovieBacklog.Services;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
 using System.Collections.Generic;
 using System.Linq;
-using MovieBacklog.Models.ViewModels;
 using System.Threading;
 
 namespace MovieBacklog.Controllers
@@ -118,6 +119,20 @@ namespace MovieBacklog.Controllers
             mediaRecordService.UpdateMediaRecord(record);
 
             return Json(record.ThumbnailUrl);
+        }
+
+        [HttpPost]
+        public void ImportBacklog(string jsonString)
+        {
+            throw new System.NotImplementedException("ImportBacklog is not implemented yet.");
+        }
+
+        [HttpPost]
+        public JsonResult ExportBacklog()
+        {
+            List<MediaRecord> backlog = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.AddedBy == user.CurrentUser).ToList();
+            string jsonString = JsonConvert.SerializeObject(backlog, Formatting.Indented);
+            return Json(jsonString);
         }
 
         private List<MediaRecord> ImdbApiCall(string title)

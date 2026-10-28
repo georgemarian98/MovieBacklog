@@ -31,3 +31,43 @@ function changeUser(user) {
         location.reload();
     });
 }
+
+function importLibrary() {
+    $.ajax({
+        url: "/Home/ImportBacklog",
+        method: "POST",
+        data: {
+            jsonString: "YOOOOOOOOOOOOOOOO MERGEEEE?"
+        },
+        success: function (result) {
+            console.log("A MERS!!!");
+        }
+    });
+}
+
+function exportLibrary() {
+    $.ajax({
+        url: "/Home/ExportBacklog",
+        method: "POST",
+        success: function (result) {
+            const content = typeof result === "string"
+                ? result
+                : JSON.stringify(result, null, 2);
+
+            const blob = new Blob([content], { type: "application/json" });
+            const downloadUrl = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+
+            link.href = downloadUrl;
+            link.download = "media-backlog.json";
+            document.body.appendChild(link);
+            link.click();
+            link.remove();
+
+            URL.revokeObjectURL(downloadUrl);
+        },
+        error: function (error) {
+            console.error("Failed to export library.", error);
+        }
+    });
+}
