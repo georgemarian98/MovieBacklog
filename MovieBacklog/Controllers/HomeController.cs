@@ -122,9 +122,20 @@ namespace MovieBacklog.Controllers
         }
 
         [HttpPost]
-        public void ImportBacklog(string jsonString)
+        public void ImportBacklog(string jsonInputString)
         {
-            throw new System.NotImplementedException("ImportBacklog is not implemented yet.");
+            var mediaRecords = JsonConvert.DeserializeObject<List<MediaRecord>>(jsonInputString);
+            mediaRecords.RemoveAll(mediaRecord => mediaRecord.AddedBy != user.CurrentUser);
+            
+            if (mediaRecords == null || mediaRecords.Count == 0)
+            {
+                throw new System.Exception("No valid media records found in the provided JSON input.");
+            }
+
+            if (!mediaRecordService.ImportBacklog(mediaRecords))
+            {
+                throw new System.Exception("Failed to import media records.");
+            }
         }
 
         [HttpPost]

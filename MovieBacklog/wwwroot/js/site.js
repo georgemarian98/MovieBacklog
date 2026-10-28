@@ -32,17 +32,49 @@ function changeUser(user) {
     });
 }
 
-function importLibrary() {
-    $.ajax({
-        url: "/Home/ImportBacklog",
-        method: "POST",
-        data: {
-            jsonString: "YOOOOOOOOOOOOOOOO MERGEEEE?"
-        },
-        success: function (result) {
-            console.log("A MERS!!!");
-        }
+async function importLibrary() {
+    const input = document.createElement("input");
+    input.type = "file";
+    input.accept = ".json,application/json";
+
+    const file = await new Promise((resolve) => {
+        input.addEventListener("change", () => {
+            resolve(input.files.length > 0 ? input.files[0] : null);
+        });
+
+        input.addEventListener("cancel", () => {
+            resolve(null);
+        });
+
+        document.body.appendChild(input);
+        input.click();
     });
+
+    input.remove();
+
+    if (!file) {
+        return;
+    }
+
+    try {
+        const jsonString = await file.text();
+
+        $.ajax({
+            url: "/Home/ImportBacklog",
+            method: "POST",
+            data: { jsonInputString: jsonString },
+            success: function (result) {
+                alert("Library imported successfully.");
+                location.reload();
+            },
+            error: function (error) {
+                console.error("Failed to import library.", error);
+                alert("Failed to import library.");
+            }
+        });
+    } catch (error) {
+        console.error("Failed to read the selected file.", error);
+    }
 }
 
 function exportLibrary() {

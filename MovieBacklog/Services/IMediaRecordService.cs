@@ -18,6 +18,9 @@ namespace MovieBacklog.Services
 
         public void UpdateMediaRecord(MediaRecord record);
 
+        // Replace the existing backlog with the list of MediaRecords
+        public bool ImportBacklog(List<MediaRecord> mediaRecords);
+
         // Import backlog from a JSON file. Warning: this will erase the existing backlog!
         public bool ImportBacklogFromJson(string filePath);
     }

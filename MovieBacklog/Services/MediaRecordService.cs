@@ -54,6 +54,16 @@ namespace MovieBacklog.Services
             string jsonInput = System.IO.File.ReadAllText(filePath);
             var mediaRecords = JsonSerializer.Deserialize<List<MediaRecord>>(jsonInput);
 
+            if (mediaRecords == null || mediaRecords.Count == 0)
+            {
+                return false;
+            }
+
+            return ImportBacklog(mediaRecords);
+        }
+
+        public bool ImportBacklog(List<MediaRecord> mediaRecords)
+        {
             // Remove all existing media records
             var existing = applicationDb.Media.ToList();
             if (existing.Any())
@@ -64,7 +74,11 @@ namespace MovieBacklog.Services
             applicationDb.Media.AddRange(mediaRecords);
             applicationDb.SaveChanges();
 
-            return true;
+            List<MediaRecord> currentMediaRecords = applicationDb.Media.ToList();
+            currentMediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
+            mediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
+
+            return currentMediaRecords.SequenceEqual(mediaRecords);
         }
     }
 }
