@@ -19,13 +19,7 @@ jobs:
     - name: Setup .NET
       uses: actions/setup-dotnet@v1
       with:
-        dotnet-version: 10.0.x 
-
-    # - name: Install libssl1.1
-    #   run: |
-    #     wget http://archive.ubuntu.com/ubuntu/pool/main/o/openssl/libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-    #     sudo dpkg -i libssl1.1_1.1.1f-1ubuntu2_amd64.deb
-
+        dotnet-version: 10.0.x
 
     - name: Restore dependencies
       run: dotnet restore
@@ -36,8 +30,7 @@ jobs:
       working-directory: MovieBacklog
 
     - name: Test
-      run: dotnet test --no-build --verbosity normal
-      working-directory: MovieBacklog
+      run: dotnet test --verbosity normal
 
   # deploy:
   #   needs: build
