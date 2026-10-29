@@ -25,7 +25,7 @@ namespace MovieBacklog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var movies = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == true && mediaRecord.AddedBy == user.CurrentUser);
+            var movies = mediaRecordService.GetBacklog(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == true);
             return View(movies);
         }
         
@@ -33,7 +33,7 @@ namespace MovieBacklog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var shows = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.IsMovie == false && mediaRecord.AddedBy == user.CurrentUser);
+            var shows = mediaRecordService.GetBacklog(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == false);
             return View(shows);
         }
 
@@ -55,10 +55,10 @@ namespace MovieBacklog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var mediaRecordBacklog = mediaRecordService.GetBacklog();
+            var mediaRecordBacklog = mediaRecordService.GetBacklog(user.CurrentUser);
             var foundMediaRcords = ImdbApiCall(mediaRecordTitle)
                 .Where(mediaRecord => 
-                mediaRecordBacklog.Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title && mediaRecordBacklog.AddedBy == user.CurrentUser) == false);
+                mediaRecordBacklog.Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title) == false);
 
             return View(foundMediaRcords);
         }
@@ -132,7 +132,7 @@ namespace MovieBacklog.Controllers
                 throw new System.Exception("No valid media records found in the provided JSON input.");
             }
 
-            if (!mediaRecordService.ImportBacklog(mediaRecords))
+            if (!mediaRecordService.ImportBacklog(mediaRecords, user.CurrentUser))
             {
                 throw new System.Exception("Failed to import media records.");
             }
@@ -141,7 +141,7 @@ namespace MovieBacklog.Controllers
         [HttpPost]
         public JsonResult ExportBacklog()
         {
-            List<MediaRecord> backlog = mediaRecordService.GetBacklog().Where(mediaRecord => mediaRecord.AddedBy == user.CurrentUser).ToList();
+            List<MediaRecord> backlog = mediaRecordService.GetBacklog(user.CurrentUser);
             string jsonString = JsonConvert.SerializeObject(backlog, Formatting.Indented);
             return Json(jsonString);
         }

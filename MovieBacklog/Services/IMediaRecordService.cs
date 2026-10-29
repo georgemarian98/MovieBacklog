@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using MovieBacklog.Models;
 
 namespace MovieBacklog.Services
 {
     public interface IMediaRecordService
     {
-        public List<MediaRecord> GetBacklog();
+        public List<MediaRecord> GetBacklog(string user = null);
 
         public void AddMediaRecordToBacklog(MediaRecord movie);
 
@@ -18,10 +15,10 @@ namespace MovieBacklog.Services
 
         public void UpdateMediaRecord(MediaRecord record);
 
-        // Replace the existing backlog with the list of MediaRecords
-        public bool ImportBacklog(List<MediaRecord> mediaRecords);
-
         // Import backlog from a JSON file. Warning: this will erase the existing backlog!
-        public bool ImportBacklogFromJson(string filePath);
+        public bool ImportBacklogFromJson(string filePath, string user);
+
+        // Replace the existing backlog with the list of MediaRecords
+        public bool ImportBacklog(List<MediaRecord> mediaRecords, string user);
     }
 }

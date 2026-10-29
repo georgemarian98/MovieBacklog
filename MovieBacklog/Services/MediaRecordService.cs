@@ -21,9 +21,14 @@ namespace MovieBacklog.Services
             applicationDb.SaveChanges();
         }
 
-        public List<MediaRecord> GetBacklog()
+        public List<MediaRecord> GetBacklog(string user = null)
         {
-            return applicationDb.Media.OrderBy(media => media.Title).ToList();
+            IQueryable<MediaRecord> query = applicationDb.Media.OrderBy(media => media.Title);
+            if (user != null)
+            {
+                query = query.Where(media => media.AddedBy == user);
+            }
+            return query.ToList();
         }
 
         public void RemoveMediaRecord(int id)
@@ -44,7 +49,7 @@ namespace MovieBacklog.Services
             applicationDb.SaveChanges();
         }
 
-        public bool ImportBacklogFromJson(string filePath)
+        public bool ImportBacklogFromJson(string filePath, string user)
         {
             if (System.IO.File.Exists(filePath) == false)
             {
@@ -59,13 +64,13 @@ namespace MovieBacklog.Services
                 return false;
             }
 
-            return ImportBacklog(mediaRecords);
+            return ImportBacklog(mediaRecords, user);
         }
 
-        public bool ImportBacklog(List<MediaRecord> mediaRecords)
+        public bool ImportBacklog(List<MediaRecord> mediaRecords, string user)
         {
             // Remove all existing media records
-            var existing = applicationDb.Media.ToList();
+            List<MediaRecord> existing = GetBacklog(user);
             if (existing.Any())
             {
                 applicationDb.Media.RemoveRange(existing);
@@ -74,7 +79,7 @@ namespace MovieBacklog.Services
             applicationDb.Media.AddRange(mediaRecords);
             applicationDb.SaveChanges();
 
-            List<MediaRecord> currentMediaRecords = applicationDb.Media.ToList();
+            List<MediaRecord> currentMediaRecords = GetBacklog(user);
             currentMediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
             mediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
 
