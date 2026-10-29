@@ -16,6 +16,8 @@ In order to build the project run:
 If there is problem when inserting a new media into the data base this command in the postgres database console:
 `SELECT setval(pg_get_serial_sequence('"Media"', 'Id'), COALESCE(MAX("Id"), 1)) FROM "Media";`
 This command will set the next assigend index to be the next in the sequence thus avoiding collisions.
+In order to access the postgress console run:
+`docker exec -it <container_name> psql -U <username> -d <database_name>`
 
 When you run the app for the first time, the database need to be initialized, Use the following commands in movie-backlog/Moviebacklog folder:
 - `dotnet ef migrations add <MESSAGE>`

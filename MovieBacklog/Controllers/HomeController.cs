@@ -95,10 +95,11 @@ namespace MovieBacklog.Controllers
             for (int attempts = 0; attempts < 5; ++attempts)
             {
                 var imdbClient = new RestClient($"https://imdb8.p.rapidapi.com/title/v2/get-details?tconst={titleId}");
-                var imdbRequest = new RestRequest(Method.GET);
+                var imdbRequest = new RestRequest();
+                imdbRequest.Method = Method.Get;
                 imdbRequest.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
                 imdbRequest.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
-                IRestResponse imdbResponse = imdbClient.Execute(imdbRequest);
+                RestResponse imdbResponse = imdbClient.Execute(imdbRequest);
 
                 if (imdbResponse.IsSuccessful)
                 {
@@ -149,10 +150,11 @@ namespace MovieBacklog.Controllers
         private List<MediaRecord> ImdbApiCall(string title)
         {
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
-            var request = new RestRequest(Method.GET);
+            var request = new RestRequest();
+            request.Method = Method.Get;
             request.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
             request.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
-            IRestResponse response = client.Execute(request);
+            RestResponse response = client.Execute(request);
 
             return CreateMediaRecordsFromJson(response.Content);
         }
