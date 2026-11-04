@@ -61,8 +61,8 @@ public class MediaServiceTests
         File.WriteAllText(emptyPath, "[]");
         try
         {
-            Assert.False(service.ImportBacklogFromJson(missingPath, "George"));
-            Assert.False(service.ImportBacklogFromJson(emptyPath, "George"));
+            Assert.False(service.ImportBacklogFromJsonFile(missingPath, "George"));
+            Assert.False(service.ImportBacklogFromJsonFile(emptyPath, "George"));
         }
         finally
         {

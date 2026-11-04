@@ -15,10 +15,16 @@ namespace MovieBacklog.Services
             this.applicationDb = applicationDb;
         }
 
-        public void AddMediaRecordToBacklog(MediaRecord media)
+        public bool AddMediaRecordToBacklog(MediaRecord media)
         {
+            if (media == null)
+            {
+                return false;
+            }
+
             applicationDb.Add(media);
-            applicationDb.SaveChanges();
+            int rowsAffected = applicationDb.SaveChanges();
+            return rowsAffected == 1;
         }
 
         public List<MediaRecord> GetBacklog(string user = null)
@@ -31,11 +37,17 @@ namespace MovieBacklog.Services
             return query.ToList();
         }
 
-        public void RemoveMediaRecord(int id)
+        public bool RemoveMediaRecord(int id)
         {
             var media = applicationDb.Media.Find(id);
+            if (media == null)
+            {
+                return false;
+            }
+
             applicationDb.Media.Remove(media);
-            applicationDb.SaveChanges();
+            int rowsAffected = applicationDb.SaveChanges();
+            return rowsAffected == 1;
         }
 
         public MediaRecord GetMediaRecord(int id)
@@ -43,13 +55,18 @@ namespace MovieBacklog.Services
             return applicationDb.Media.Find(id);
         }
 
-        public void UpdateMediaRecord(MediaRecord record)
+        public bool UpdateMediaRecord(MediaRecord record)
         {
+            if (record == null)
+            {
+                return false;
+            }
             applicationDb.Media.Update(record);
-            applicationDb.SaveChanges();
+            int rowsAffected = applicationDb.SaveChanges();
+            return rowsAffected == 1;
         }
 
-        public bool ImportBacklogFromJson(string filePath, string user)
+        public bool ImportBacklogFromJsonFile(string filePath, string user)
         {
             if (System.IO.File.Exists(filePath) == false)
             {

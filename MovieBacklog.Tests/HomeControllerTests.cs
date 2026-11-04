@@ -164,15 +164,15 @@ public class HomeControllerTests
                 : Records.Where(record => record.AddedBy == user).ToList();
         }
 
-        public void AddMediaRecordToBacklog(MediaRecord movie) => AddedRecords.Add(movie);
+        public bool AddMediaRecordToBacklog(MediaRecord movie) { AddedRecords.Add(movie); return true; }
 
-        public void RemoveMediaRecord(int id) => RemovedId = id;
+        public bool RemoveMediaRecord(int id) { RemovedId = id; return true; }
 
         public MediaRecord GetMediaRecord(int id) => Records.SingleOrDefault(record => record.Id == id, new MediaRecord());
 
-        public void UpdateMediaRecord(MediaRecord record) { }
+        public bool UpdateMediaRecord(MediaRecord record) => true;
 
-        public bool ImportBacklogFromJson(string filePath, string user) => true;
+        public bool ImportBacklogFromJsonFile(string filePath, string user) => true;
 
         public bool ImportBacklog(List<MediaRecord> mediaRecords, string user)
         {

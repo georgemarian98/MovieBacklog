@@ -8,6 +8,9 @@
         },
         success: function (result) {
             img.src = result;
+        },
+        error: function (xhr, status, error) {
+            alert("Error updating media record");
         }
     });
 }
@@ -21,6 +24,9 @@ function deleteMediaRecord(id) {
         },
         success: function (result) {
             location.reload();
+        },
+        error: function (xhr, status, error) {
+            alert("Error deleting media record");
         }
     });
 }
@@ -41,6 +47,9 @@ function addMediaRecord(mediaRecord, btn) {
                 target.classList.add('btn-secondary');
                 target.innerText = 'Added';
             }
+        },
+        error: function (xhr, status, error) {
+            alert("Error adding media record");
         }
     });
 }

@@ -66,7 +66,10 @@ namespace MovieBacklog.Controllers
         [HttpDelete]
         public void DeleteMediaRecord(int id)
         {
-            mediaRecordService.RemoveMediaRecord(id);
+            if (!mediaRecordService.RemoveMediaRecord(id))
+            {
+                throw new System.Exception("Failed to remove media record from backlog.");
+            }
         }
 
         [HttpPost]
@@ -80,7 +83,11 @@ namespace MovieBacklog.Controllers
                 IsMovie = isMovie
             };
 
-            mediaRecordService.AddMediaRecordToBacklog(newSearchedMediaRecord.ToMediaRecord(user.CurrentUser));
+            MediaRecord media = newSearchedMediaRecord.ToMediaRecord(user.CurrentUser);
+            if (!mediaRecordService.AddMediaRecordToBacklog(media))
+            {
+                throw new System.Exception("Failed to add media record to backlog.");
+            }
         }
 
         [HttpPost]
@@ -117,7 +124,10 @@ namespace MovieBacklog.Controllers
 
             string thumbnailUrl = jsonObject["data"]["title"]["primaryImage"].Value<string>("url");
             record.Image = SearchedMediaRecord.DownloadImage(thumbnailUrl);
-            mediaRecordService.UpdateMediaRecord(record);
+            if (!mediaRecordService.UpdateMediaRecord(record))
+            {
+                throw new System.Exception("Failed to update media record.");
+            }
 
             return Json(record.Image);
         }
