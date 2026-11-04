@@ -11,7 +11,9 @@ namespace MovieBacklog.Models
 
         public string Title { get; set; }
 
-        public string ThumbnailUrl { get; set; }
+        public DateTime DateAdded { get; set; }
+
+        public byte[] Image { get; set; }
 
         public string ImdbUrl { get; set; }
 

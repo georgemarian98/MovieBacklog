@@ -23,11 +23,34 @@ public class HomeControllerTests
             ]
         };
         var controller = new HomeController(service);
+        controller.Users("George");
 
         var result = Assert.IsType<ViewResult>(controller.Movies());
         var model = Assert.IsAssignableFrom<IEnumerable<MediaRecord>>(result.Model);
 
         Assert.Equal(new[] { "Movie" }, model.Select(record => record.Title));
+        Assert.Equal("George", service.LastRequestedUser);
+    }
+
+    [Fact]
+    public void TvShows_ReturnsOnlyShowsForTheCurrentUser()
+    {
+        var service = new FakeMediaRecordService
+        {
+            Records =
+            [
+                new MediaRecord { Title = "Movie", IsMovie = true, AddedBy = "George" },
+                new MediaRecord { Title = "Show", IsMovie = false, AddedBy = "George" },
+                new MediaRecord { Title = "Other User Show", IsMovie = false, AddedBy = "Rebeka" }
+            ]
+        };
+        var controller = new HomeController(service);
+        controller.Users("George");
+
+        var result = Assert.IsType<ViewResult>(controller.TvShows());
+        var model = Assert.IsAssignableFrom<IEnumerable<MediaRecord>>(result.Model);
+
+        Assert.Equal(new[] { "Show" }, model.Select(record => record.Title));
         Assert.Equal("George", service.LastRequestedUser);
     }
 
@@ -50,13 +73,13 @@ public class HomeControllerTests
         var controller = new HomeController(service);
         controller.Users("George");
 
-        controller.AddMediaRecord("Arrival", 2016, "imdb-url", "thumbnail-url", true);
+        controller.AddMediaRecord("Arrival", 2016, "imdb-url", "", true);
 
         var added = Assert.Single(service.AddedRecords);
         Assert.Equal("Arrival", added.Title);
         Assert.Equal(2016, added.Year);
         Assert.Equal("imdb-url", added.ImdbUrl);
-        Assert.Equal("thumbnail-url", added.ThumbnailUrl);
+        Assert.Null(added.Image);
         Assert.True(added.IsMovie);
         Assert.Equal("George", added.AddedBy);
     }
@@ -90,12 +113,48 @@ public class HomeControllerTests
         Assert.Equal("George", service.LastRequestedUser);
     }
 
+    [Fact]
+    public void ImportBacklog_ImportsOnlyRecordsForTheCurrentUser()
+    {
+        var service = new FakeMediaRecordService();
+        var controller = new HomeController(service);
+        controller.Users("George");
+
+        controller.ImportBacklog("""
+            [
+              { "Title": "Arrival", "AddedBy": "George" },
+              { "Title": "Other User Movie", "AddedBy": "Rebeka" }
+            ]
+            """);
+
+        var imported = Assert.IsType<List<MediaRecord>>(service.ImportedRecords);
+        var record = Assert.Single(imported);
+        Assert.Equal("Arrival", record.Title);
+        Assert.Equal("George", record.AddedBy);
+        Assert.Equal("George", service.ImportedUser);
+    }
+
+    [Fact]
+    public void ImportBacklog_ThrowsWhenNoRecordsBelongToTheCurrentUser()
+    {
+        var service = new FakeMediaRecordService();
+        var controller = new HomeController(service);
+        controller.Users("George");
+
+        var exception = Assert.Throws<System.Exception>(() => controller.ImportBacklog("[]"));
+
+        Assert.Equal("No valid media records found in the provided JSON input.", exception.Message);
+        Assert.Null(service.ImportedRecords);
+    }
+
     private sealed class FakeMediaRecordService : IMediaRecordService
     {
         public List<MediaRecord> Records { get; set; } = [];
         public List<MediaRecord> AddedRecords { get; } = [];
         public int? RemovedId { get; private set; }
         public string? LastRequestedUser { get; private set; }
+        public List<MediaRecord>? ImportedRecords { get; private set; }
+        public string? ImportedUser { get; private set; }
 
         public List<MediaRecord> GetBacklog(string user)
         {
@@ -115,6 +174,11 @@ public class HomeControllerTests
 
         public bool ImportBacklogFromJson(string filePath, string user) => true;
 
-        public bool ImportBacklog(List<MediaRecord> mediaRecords, string user) => true;
+        public bool ImportBacklog(List<MediaRecord> mediaRecords, string user)
+        {
+            ImportedRecords = mediaRecords;
+            ImportedUser = user;
+            return true;
+        }
     }
 }

@@ -72,16 +72,15 @@ namespace MovieBacklog.Controllers
         [HttpPost]
         public void AddMediaRecord(string title, int year, string imdbUrl, string thumbnailUrl, bool isMovie)
         {
-            MediaRecord newMediaRecord = new() { 
+            SearchedMediaRecord newSearchedMediaRecord = new SearchedMediaRecord() { 
                 Title = title, 
                 Year = year, 
                 ImdbUrl = imdbUrl, 
-                ThumbnailUrl = thumbnailUrl, 
-                IsMovie = isMovie, 
-                AddedBy = user.CurrentUser 
+                ThumbnailUrl = thumbnailUrl,
+                IsMovie = isMovie
             };
 
-            mediaRecordService.AddMediaRecordToBacklog(newMediaRecord);
+            mediaRecordService.AddMediaRecordToBacklog(newSearchedMediaRecord.ToMediaRecord(user.CurrentUser));
         }
 
         [HttpPost]
@@ -89,7 +88,7 @@ namespace MovieBacklog.Controllers
         {
             MediaRecord record = mediaRecordService.GetMediaRecord(id);
             string titleId = record.ImdbUrl.Substring("https://www.imdb.com/title/".Length).Trim('/');
-            JObject jsonObject = new();
+            JObject jsonObject = new JObject();
 
             // RapidAPI limits to just 5 requests per second. Sometime it is not enough
             for (int attempts = 0; attempts < 5; ++attempts)
@@ -116,10 +115,11 @@ namespace MovieBacklog.Controllers
                 throw new System.Exception($"IMDB API error: {imdbResponse.StatusCode} - {imdbResponse.Content}");
             }
 
-            record.ThumbnailUrl = jsonObject["data"]["title"]["primaryImage"].Value<string>("url");
+            string thumbnailUrl = jsonObject["data"]["title"]["primaryImage"].Value<string>("url");
+            record.Image = SearchedMediaRecord.DownloadImage(thumbnailUrl);
             mediaRecordService.UpdateMediaRecord(record);
 
-            return Json(record.ThumbnailUrl);
+            return Json(record.Image);
         }
 
         [HttpPost]
@@ -147,7 +147,7 @@ namespace MovieBacklog.Controllers
             return Json(jsonString);
         }
 
-        private List<MediaRecord> ImdbApiCall(string title)
+        private List<SearchedMediaRecord> ImdbApiCall(string title)
         {
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
             var request = new RestRequest();
@@ -159,15 +159,15 @@ namespace MovieBacklog.Controllers
             return CreateMediaRecordsFromJson(response.Content);
         }
 
-        private List<MediaRecord> CreateMediaRecordsFromJson(string jsonContent)
+        private List<SearchedMediaRecord> CreateMediaRecordsFromJson(string jsonContent)
         {
             var json = JObject.Parse(jsonContent);
             var data = json["results"];
 
-            return data.Select(CreateNewMediaRecord).Where(el => el != null).ToList();
+            return data.Select(CreateNewSearchedMediaRecord).Where(el => el != null).ToList();
         }
 
-        private MediaRecord CreateNewMediaRecord(JToken item)
+        private SearchedMediaRecord CreateNewSearchedMediaRecord(JToken item)
         {
             if (item["image"] == null)
             {
@@ -178,11 +178,18 @@ namespace MovieBacklog.Controllers
             string title = item.Value<string>("title");
             string imdbUrl = "https://www.imdb.com" + item.Value<string>("id");
             string thumbnailUrl = item["image"].Value<string>("url");
-            bool type = item.Value<string>("titleType") == "movie";
+            bool isMovie = item.Value<string>("titleType") == "movie";
             string titleType = item.Value<string>("titleType"); //TODO: Keep track for each media type
 
-            MediaRecord newMediaRecord = new MediaRecord() { Title = title, Year = year, ImdbUrl = imdbUrl, ThumbnailUrl = thumbnailUrl, IsMovie = type };
-            return (year == 0 || title == null || imdbUrl == null) ? null : newMediaRecord;
+            SearchedMediaRecord newSearchedMediaRecord = new SearchedMediaRecord
+            { 
+                Title = title,
+                Year = year,
+                ImdbUrl = imdbUrl,
+                ThumbnailUrl = thumbnailUrl,
+                IsMovie = isMovie
+            };
+            return (year == 0 || title == null || imdbUrl == null) ? null : newSearchedMediaRecord;
         }
     }
 }

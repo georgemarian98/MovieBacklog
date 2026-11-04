@@ -1,4 +1,5 @@
 ﻿function updateThumbnail(img, recordId) {
+    // TODO: Probably this is not needed anymore
     $.ajax({
         url: "/Home/UpdateRecord",
         method: "POST",
@@ -46,7 +47,9 @@ function addMediaRecord(mediaRecord, btn) {
 
 // New helper: read data-* attributes safely then call addMediaRecord
 function addMediaRecordFromButton(btn) {
-    if (!btn || !btn.dataset) return;
+    if (!btn || !btn.dataset)
+        return;
+
     var media = {
         title: btn.dataset.title,
         year: parseInt(btn.dataset.year, 10) || 0,

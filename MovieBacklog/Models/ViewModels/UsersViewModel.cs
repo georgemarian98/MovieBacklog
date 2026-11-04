@@ -8,11 +8,10 @@ namespace MovieBacklog.Models.ViewModels
 {
     public class UsersViewModel
     {
-        private static readonly List<string> users = new()
-        {
+        private static readonly List<string> users = [
             "George",
             "Rebeka"
-        };
+        ];
 
         public string CurrentUser { get; set; } = "George";
 
