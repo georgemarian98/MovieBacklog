@@ -22,9 +22,16 @@ namespace MovieBacklog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            string postgresConnectionString = Environment.ExpandEnvironmentVariables(Configuration.GetConnectionString("PostgresDocker"));
-
-            services.AddDbContext<ApplicationDbContext>(options => options.UseNpgsql(postgresConnectionString));
+            /*
+             * This will raise a serios problem on docker. 
+             * Do I need to do a live database migation on startup?
+             * What if the database file is on a mounted volume?
+             * I think the best aproach is:
+             *      if the database file extsts do nothing
+             *      if it does not exist run the migration
+             * */
+            string databaseLocation = Environment.GetEnvironmentVariable("DATABASE_LOCATION") ?? "movieBacklog.db";
+            services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Data Source={databaseLocation}"));
             services.AddRazorPages();
             services.AddScoped<IMediaRecordService, MediaService>();
         }
