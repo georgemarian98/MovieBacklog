@@ -164,6 +164,8 @@ public class HomeControllerTests
                 : Records.Where(record => record.AddedBy == user).ToList();
         }
 
+        public byte[]? GetThumbnail(int id) => Records.SingleOrDefault(record => record.Id == id)?.Image;
+
         public bool AddMediaRecordToBacklog(MediaRecord movie) { AddedRecords.Add(movie); return true; }
 
         public bool RemoveMediaRecord(int id) { RemovedId = id; return true; }

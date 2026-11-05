@@ -7,6 +7,8 @@ namespace MovieBacklog.Services
     {
         public List<MediaRecord> GetBacklog(string user = null);
 
+        public byte[] GetThumbnail(int id);
+
         public bool AddMediaRecordToBacklog(MediaRecord movie);
 
         public bool RemoveMediaRecord(int id);

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Net.Http;
+using MovieBacklog.Utils;
 
 namespace MovieBacklog.Models.ViewModels
 {
@@ -16,6 +16,8 @@ namespace MovieBacklog.Models.ViewModels
 
         public MediaRecord ToMediaRecord(string addedBy)
         {
+            byte[] mediaImage = ImageTools.DownloadImage(this.ThumbnailUrl);
+
             return new MediaRecord
             {
                 Title = this.Title,
@@ -24,21 +26,8 @@ namespace MovieBacklog.Models.ViewModels
                 IsMovie = this.IsMovie,
                 AddedBy = addedBy,
                 DateAdded = DateTime.Now,
-                Image = DownloadImage(this.ThumbnailUrl)
+                Image = ImageTools.ResizeImage(mediaImage)
             };
-        }
-
-        public static byte[] DownloadImage(string imageUrl)
-        {
-            if (string.IsNullOrEmpty(imageUrl))
-            {
-                return null;
-            }
-
-            HttpClient client = new HttpClient(); // TODO: use RestSharp to remain consistant with the rest of the project
-            HttpResponseMessage response = client.GetAsync(imageUrl).GetAwaiter().GetResult();
-            byte[] imageBytes = response.Content.ReadAsByteArrayAsync().GetAwaiter().GetResult();
-            return imageBytes;
         }
     }
 }

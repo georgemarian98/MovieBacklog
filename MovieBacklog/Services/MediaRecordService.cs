@@ -2,6 +2,7 @@
 using System.Linq;
 using MovieBacklog.Models;
 using MovieBacklog.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Text.Json;
 
 namespace MovieBacklog.Services
@@ -29,12 +30,33 @@ namespace MovieBacklog.Services
 
         public List<MediaRecord> GetBacklog(string user = null)
         {
-            IQueryable<MediaRecord> query = applicationDb.Media.OrderBy(media => media.Title);
+            IQueryable<MediaRecord> query = applicationDb.Media
+                .AsNoTracking()
+                .OrderBy(media => media.Title)
+                .Select(media => new MediaRecord
+                {
+                    Id = media.Id,
+                    Title = media.Title,
+                    DateAdded = media.DateAdded,
+                    ImdbUrl = media.ImdbUrl,
+                    Year = media.Year,
+                    IsMovie = media.IsMovie,
+                    AddedBy = media.AddedBy
+                });
+
             if (user != null)
             {
                 query = query.Where(media => media.AddedBy == user);
             }
             return query.ToList();
+        }
+
+        public byte[] GetThumbnail(int id)
+        {
+            return applicationDb.Media
+                .Where(media => media.Id == id)
+                .Select(media => media.Image)
+                .FirstOrDefault();
         }
 
         public bool RemoveMediaRecord(int id)
@@ -87,7 +109,10 @@ namespace MovieBacklog.Services
         public bool ImportBacklog(List<MediaRecord> mediaRecords, string user)
         {
             // Remove all existing media records
-            List<MediaRecord> existing = GetBacklog(user);
+            List<MediaRecord> existing = applicationDb.Media
+                .Where(media => media.AddedBy == user)
+                .ToList();
+
             if (existing.Any())
             {
                 applicationDb.Media.RemoveRange(existing);
@@ -100,7 +125,25 @@ namespace MovieBacklog.Services
             currentMediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
             mediaRecords.Sort((x, y) => x.Title.CompareTo(y.Title));
 
-            return currentMediaRecords.SequenceEqual(mediaRecords);
+            if (currentMediaRecords.Count != mediaRecords.Count)
+            {
+                return false;
+            }
+
+            return currentMediaRecords
+                .Zip(mediaRecords)
+                .All(pair =>
+                {
+                    var current = pair.First;
+                    var media = pair.Second;
+
+                    return current.Title == media.Title
+                        && current.Year == media.Year
+                        && current.IsMovie == media.IsMovie
+                        && current.ImdbUrl == media.ImdbUrl
+                        && current.AddedBy == media.AddedBy
+                        && current.Image?.SequenceEqual(media.Image ?? []) != false;
+                });
         }
     }
 }

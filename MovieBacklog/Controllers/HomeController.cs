@@ -2,6 +2,7 @@
 using MovieBacklog.Models;
 using MovieBacklog.Models.ViewModels;
 using MovieBacklog.Services;
+using MovieBacklog.Utils;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using RestSharp;
@@ -35,6 +36,13 @@ namespace MovieBacklog.Controllers
 
             var shows = mediaRecordService.GetBacklog(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == false);
             return View(shows);
+        }
+
+        [HttpGet]
+        public ActionResult Thumbnail(int id)
+        {
+            byte[] image = mediaRecordService.GetThumbnail(id);
+            return image == null ? NotFound() : File(image, "image/webp");
         }
 
         [HttpPost]
@@ -102,7 +110,6 @@ namespace MovieBacklog.Controllers
             {
                 var imdbClient = new RestClient($"https://imdb8.p.rapidapi.com/title/v2/get-details?tconst={titleId}");
                 var imdbRequest = new RestRequest();
-                imdbRequest.Method = Method.Get;
                 imdbRequest.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
                 imdbRequest.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
                 RestResponse imdbResponse = imdbClient.Execute(imdbRequest);
@@ -123,7 +130,7 @@ namespace MovieBacklog.Controllers
             }
 
             string thumbnailUrl = jsonObject["data"]["title"]["primaryImage"].Value<string>("url");
-            record.Image = SearchedMediaRecord.DownloadImage(thumbnailUrl);
+            record.Image = ImageTools.DownloadImage(thumbnailUrl);
             if (!mediaRecordService.UpdateMediaRecord(record))
             {
                 throw new System.Exception("Failed to update media record.");
@@ -137,7 +144,7 @@ namespace MovieBacklog.Controllers
         {
             var mediaRecords = JsonConvert.DeserializeObject<List<MediaRecord>>(jsonInputString);
             mediaRecords.RemoveAll(mediaRecord => mediaRecord.AddedBy != user.CurrentUser);
-            
+
             if (mediaRecords == null || mediaRecords.Count == 0)
             {
                 throw new System.Exception("No valid media records found in the provided JSON input.");
@@ -161,7 +168,6 @@ namespace MovieBacklog.Controllers
         {
             var client = new RestClient($"https://imdb8.p.rapidapi.com/title/find?q={title}");
             var request = new RestRequest();
-            request.Method = Method.Get;
             request.AddHeader("x-rapidapi-host", "imdb8.p.rapidapi.com");
             request.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
             RestResponse response = client.Execute(request);
