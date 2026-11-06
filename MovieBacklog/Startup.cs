@@ -22,14 +22,6 @@ namespace MovieBacklog
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            /*
-             * This will raise a serios problem on docker. 
-             * Do I need to do a live database migation on startup?
-             * What if the database file is on a mounted volume?
-             * I think the best aproach is:
-             *      if the database file extsts do nothing
-             *      if it does not exist run the migration
-             * */
             string databaseLocation = Environment.GetEnvironmentVariable("DATABASE_LOCATION") ?? "movieBacklog.db";
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Data Source={databaseLocation}"));
             services.AddRazorPages();
@@ -39,6 +31,12 @@ namespace MovieBacklog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
+            using (var scope = app.ApplicationServices.CreateScope())
+            {
+                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                dbContext.Database.Migrate();
+            }
+
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();

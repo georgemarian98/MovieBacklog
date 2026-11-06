@@ -80,4 +80,4 @@ _[Ss]cripts
 *.dot[Cc]over
 
 # SqlLite database file
-movieBacklog.db*
+*.db*
