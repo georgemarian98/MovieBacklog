@@ -23,8 +23,8 @@ public class MediaServiceTests
         context.SaveChanges();
         var service = new MediaService(context);
 
-        var allRecords = service.GetBacklog();
-        var georgeRecords = service.GetBacklog("George");
+        var allRecords = service.GetBacklogView();
+        var georgeRecords = service.GetBacklogView("George");
 
         Assert.Equal(new[] { "Alpha", "Beta", "Zebra" }, allRecords.Select(record => record.Title));
         Assert.Equal(new[] { "Alpha", "Zebra" }, georgeRecords.Select(record => record.Title));
@@ -88,8 +88,8 @@ public class MediaServiceTests
         var result = service.ImportBacklog(imported, "George");
 
         Assert.True(result);
-        Assert.Equal(new[] { "New George A", "New George B" }, service.GetBacklog("George").Select(record => record.Title));
-        Assert.Equal(new[] { "Keep Rebeka" }, service.GetBacklog("Rebeka").Select(record => record.Title));
+        Assert.Equal(new[] { "New George A", "New George B" }, service.GetBacklogView("George").Select(record => record.Title));
+        Assert.Equal(new[] { "Keep Rebeka" }, service.GetBacklogView("Rebeka").Select(record => record.Title));
     }
 
     private static ApplicationDbContext CreateContext()

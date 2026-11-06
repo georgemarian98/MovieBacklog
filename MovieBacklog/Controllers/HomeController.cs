@@ -26,7 +26,7 @@ namespace MovieBacklog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var movies = mediaRecordService.GetBacklog(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == true);
+            var movies = mediaRecordService.GetBacklogView(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == true);
             return View(movies);
         }
         
@@ -34,7 +34,7 @@ namespace MovieBacklog.Controllers
         {
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
-            var shows = mediaRecordService.GetBacklog(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == false);
+            var shows = mediaRecordService.GetBacklogView(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == false);
             return View(shows);
         }
 

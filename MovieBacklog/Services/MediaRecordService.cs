@@ -30,6 +30,17 @@ namespace MovieBacklog.Services
 
         public List<MediaRecord> GetBacklog(string user = null)
         {
+            IQueryable<MediaRecord> query = applicationDb.Media.OrderBy(media => media.Title);
+
+            if (user != null)
+            {
+                query = query.Where(media => media.AddedBy == user);
+            }
+            return query.ToList();
+        }
+
+        public List<MediaRecord> GetBacklogView(string user = null)
+        {
             IQueryable<MediaRecord> query = applicationDb.Media
                 .AsNoTracking()
                 .OrderBy(media => media.Title)
@@ -109,9 +120,7 @@ namespace MovieBacklog.Services
         public bool ImportBacklog(List<MediaRecord> mediaRecords, string user)
         {
             // Remove all existing media records
-            List<MediaRecord> existing = applicationDb.Media
-                .Where(media => media.AddedBy == user)
-                .ToList();
+            List<MediaRecord> existing = GetBacklog(user);
 
             if (existing.Any())
             {
@@ -130,20 +139,7 @@ namespace MovieBacklog.Services
                 return false;
             }
 
-            return currentMediaRecords
-                .Zip(mediaRecords)
-                .All(pair =>
-                {
-                    var current = pair.First;
-                    var media = pair.Second;
-
-                    return current.Title == media.Title
-                        && current.Year == media.Year
-                        && current.IsMovie == media.IsMovie
-                        && current.ImdbUrl == media.ImdbUrl
-                        && current.AddedBy == media.AddedBy
-                        && current.Image?.SequenceEqual(media.Image ?? []) != false;
-                });
+            return currentMediaRecords.SequenceEqual(mediaRecords);
         }
     }
 }

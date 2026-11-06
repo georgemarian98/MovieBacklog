@@ -5,7 +5,11 @@ namespace MovieBacklog.Services
 {
     public interface IMediaRecordService
     {
+        // Returns a list of MediaRecords for the specified user. If no user is specified, returns all records.
         public List<MediaRecord> GetBacklog(string user = null);
+
+        // Returns a list of MediaRecords with only Id, Title, and Year populated for the specified user. If no user is specified, returns all records.
+        public List<MediaRecord> GetBacklogView(string user = null);
 
         public byte[] GetThumbnail(int id);
 

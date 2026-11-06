@@ -164,6 +164,14 @@ public class HomeControllerTests
                 : Records.Where(record => record.AddedBy == user).ToList();
         }
 
+        public List<MediaRecord> GetBacklogView(string user)
+        {
+            LastRequestedUser = user;
+            return user is null
+                ? Records
+                : Records.Where(record => record.AddedBy == user).ToList();
+        }
+
         public byte[]? GetThumbnail(int id) => Records.SingleOrDefault(record => record.Id == id)?.Image;
 
         public bool AddMediaRecordToBacklog(MediaRecord movie) { AddedRecords.Add(movie); return true; }
