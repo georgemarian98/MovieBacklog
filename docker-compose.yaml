@@ -13,7 +13,7 @@ services:
     #  - "8082:80"
     env_file: .env
     volumes:
-      - ${CONFIG_PATH}/moviebacklog/database:/app/database
+      - ${CONFIG_PATH}/moviebacklog:/app/config
     networks:
       - frontend-swarm
     labels:

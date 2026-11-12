@@ -1,6 +1,5 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using System;
 
 namespace MovieBacklog
 {
@@ -15,8 +14,7 @@ namespace MovieBacklog
            Host.CreateDefaultBuilder(args)
                .ConfigureWebHostDefaults(webBuilder =>
                {
-                   webBuilder.UseStartup<Startup>()
-                             .UseUrls($"http://*:{Environment.GetEnvironmentVariable("PORT")}");
+                   webBuilder.UseStartup<Startup>();
                });
     }
 }

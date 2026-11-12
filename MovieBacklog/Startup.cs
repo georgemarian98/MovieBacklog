@@ -25,10 +25,10 @@ namespace MovieBacklog
         public void ConfigureServices(IServiceCollection services)
         {
             string databaseLocation = Environment.GetEnvironmentVariable("DATABASE_LOCATION") ?? "movieBacklog.db";
-            string keyDirectory = Path.Combine(AppContext.BaseDirectory, "keys");
+            string keysDirectory = Environment.GetEnvironmentVariable("KEYS_DIRECTORY") ?? Path.Combine(AppContext.BaseDirectory, "keys");
 
-            DirectoryInfo keyDirectoryInfo = Directory.CreateDirectory(keyDirectory);
-            services.AddDataProtection().PersistKeysToFileSystem(keyDirectoryInfo);
+            DirectoryInfo keysDirectoryInfo = Directory.CreateDirectory(keysDirectory);
+            services.AddDataProtection().PersistKeysToFileSystem(keysDirectoryInfo);
 
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Data Source={databaseLocation}"));
             services.AddRazorPages();
@@ -59,7 +59,11 @@ namespace MovieBacklog
                 app.UseHsts();
             }
 
-            app.UseHttpsRedirection();
+            if (env.IsDevelopment())
+            {
+                app.UseHttpsRedirection();
+            }
+
             app.UseStaticFiles();
 
             app.UseRouting();
