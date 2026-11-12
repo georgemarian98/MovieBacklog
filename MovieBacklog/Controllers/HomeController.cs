@@ -144,6 +144,7 @@ namespace MovieBacklog.Controllers
         {
             var mediaRecords = JsonConvert.DeserializeObject<List<MediaRecord>>(jsonInputString);
             mediaRecords.RemoveAll(mediaRecord => mediaRecord.AddedBy != user.CurrentUser);
+            mediaRecords.ForEach(mediaRecord => mediaRecord.Id = 0); // Reset IDs to avoid conflicts
 
             if (mediaRecords == null || mediaRecords.Count == 0)
             {
