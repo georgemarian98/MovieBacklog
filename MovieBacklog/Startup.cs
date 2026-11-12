@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -7,6 +8,7 @@ using Microsoft.Extensions.Hosting;
 using MovieBacklog.Data;
 using MovieBacklog.Services;
 using System;
+using System.IO;
 
 namespace MovieBacklog
 {
@@ -23,6 +25,11 @@ namespace MovieBacklog
         public void ConfigureServices(IServiceCollection services)
         {
             string databaseLocation = Environment.GetEnvironmentVariable("DATABASE_LOCATION") ?? "movieBacklog.db";
+            string keyDirectory = Path.Combine(AppContext.BaseDirectory, "keys");
+
+            DirectoryInfo keyDirectoryInfo = Directory.CreateDirectory(keyDirectory);
+            services.AddDataProtection().PersistKeysToFileSystem(keyDirectoryInfo);
+
             services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite($"Data Source={databaseLocation}"));
             services.AddRazorPages();
             services.AddScoped<IMediaRecordService, MediaService>();
@@ -31,10 +38,14 @@ namespace MovieBacklog
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
         {
-            using (var scope = app.ApplicationServices.CreateScope())
+            string databaseLocation = Environment.GetEnvironmentVariable("DATABASE_LOCATION");
+            if (!string.IsNullOrEmpty(databaseLocation) && !File.Exists(databaseLocation))
             {
-                var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
-                dbContext.Database.Migrate();
+                using (var scope = app.ApplicationServices.CreateScope())
+                {
+                    var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+                    dbContext.Database.Migrate();
+                }
             }
 
             if (env.IsDevelopment())
