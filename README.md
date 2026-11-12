@@ -11,7 +11,7 @@ Must create the .env file with `POSTGRES_HOST`, `POSTGRES_PORT`, `POSTGRES_USER`
 `CONFIG_PATH` is the desired location for the postgres database files.
 
 In order to build the project run:
-`docker-compose build moviebacklog`
+`docker compose build moviebacklog`
 
 If there is problem when inserting a new media into the data base this command in the postgres database console:
 `SELECT setval(pg_get_serial_sequence('"Media"', 'Id'), COALESCE(MAX("Id"), 1)) FROM "Media";`
