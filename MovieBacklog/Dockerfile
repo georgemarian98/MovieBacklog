@@ -19,7 +19,9 @@ RUN dotnet build "./MovieBacklog/MovieBacklog.csproj" -c Release -o /app/build
 RUN dotnet ef migrations add InitialCreate -p "./MovieBacklog/MovieBacklog.csproj" -s "./MovieBacklog/MovieBacklog.csproj" -o "./Migrations" --verbose
 
 FROM build AS publish
-RUN dotnet publish "./MovieBacklog/MovieBacklog.csproj" -c Release -o /app/publish
+RUN dotnet publish "./MovieBacklog/MovieBacklog.csproj" \
+    -c Release -r linux-x64 --self-contained false \
+    -p:UseAppHost=false -o /app/publish
 
 FROM base AS final
 WORKDIR /app
