@@ -1,6 +1,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MovieBacklog.Controllers;
 using MovieBacklog.Models;
 using MovieBacklog.Services;
@@ -10,6 +11,8 @@ namespace MovieBacklog.Tests;
 
 public class HomeControllerTests
 {
+    private ILogger<HomeController> logger = new LoggerFactory().CreateLogger<HomeController>();
+
     [Fact]
     public void Movies_ReturnsOnlyMoviesForTheCurrentUser()
     {
@@ -22,7 +25,7 @@ public class HomeControllerTests
                 new MediaRecord { Title = "Other User Movie", IsMovie = true, AddedBy = "Rebeka" }
             ]
         };
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         var result = Assert.IsType<ViewResult>(controller.Movies());
@@ -44,7 +47,7 @@ public class HomeControllerTests
                 new MediaRecord { Title = "Other User Show", IsMovie = false, AddedBy = "Rebeka" }
             ]
         };
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         var result = Assert.IsType<ViewResult>(controller.TvShows());
@@ -57,7 +60,7 @@ public class HomeControllerTests
     [Fact]
     public void Users_ChangesCurrentUserAndRedirectsToMovies()
     {
-        var controller = new HomeController(new FakeMediaRecordService());
+        var controller = new HomeController(logger, new FakeMediaRecordService());
 
         var result = Assert.IsType<RedirectToActionResult>(controller.Users("Rebeka"));
 
@@ -70,7 +73,7 @@ public class HomeControllerTests
     public void AddMediaRecord_CreatesRecordForCurrentUser()
     {
         var service = new FakeMediaRecordService();
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         controller.AddMediaRecord("Arrival", 2016, "imdb-url", "", true);
@@ -88,7 +91,7 @@ public class HomeControllerTests
     public void DeleteMediaRecord_DelegatesToService()
     {
         var service = new FakeMediaRecordService();
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
 
         controller.DeleteMediaRecord(42);
 
@@ -102,7 +105,7 @@ public class HomeControllerTests
         {
             Records = [new MediaRecord { Id = 7, Title = "Arrival", AddedBy = "George" }]
         };
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         var result = Assert.IsType<JsonResult>(controller.ExportBacklog());
@@ -117,7 +120,7 @@ public class HomeControllerTests
     public void ImportBacklog_ImportsOnlyRecordsForTheCurrentUser()
     {
         var service = new FakeMediaRecordService();
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         controller.ImportBacklog("""
@@ -138,7 +141,7 @@ public class HomeControllerTests
     public void ImportBacklog_ThrowsWhenNoRecordsBelongToTheCurrentUser()
     {
         var service = new FakeMediaRecordService();
-        var controller = new HomeController(service);
+        var controller = new HomeController(logger, service);
         controller.Users("George");
 
         var exception = Assert.Throws<System.Exception>(() => controller.ImportBacklog("[]"));

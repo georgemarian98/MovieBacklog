@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.Logging;
 using MovieBacklog.Models;
 using MovieBacklog.Models.ViewModels;
 using MovieBacklog.Services;
@@ -14,11 +15,13 @@ namespace MovieBacklog.Controllers
 {
     public class HomeController : Controller
     {
+        private readonly ILogger<HomeController> logger;
         private readonly IMediaRecordService mediaRecordService;
         private static readonly UsersViewModel user = new();
 
-        public HomeController(IMediaRecordService mediaRecordService)
+        public HomeController(ILogger<HomeController> logger, IMediaRecordService mediaRecordService)
         {
+            this.logger = logger;
             this.mediaRecordService = mediaRecordService;
         }
 
@@ -27,6 +30,11 @@ namespace MovieBacklog.Controllers
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
             var movies = mediaRecordService.GetBacklogView(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == true);
+            logger.LogInformation("Returned '{}' movies for user '{}'.", movies.Count(), user.CurrentUser);
+            foreach (var item in movies)
+            {
+                logger.LogDebug("\tReturning movie: '{}'.", item.Title);
+            }
             return View(movies);
         }
         
@@ -35,6 +43,11 @@ namespace MovieBacklog.Controllers
             ViewBag.ItemTypesSelectList = user.AllUsers;
 
             var shows = mediaRecordService.GetBacklogView(user.CurrentUser).Where(mediaRecord => mediaRecord.IsMovie == false);
+            logger.LogInformation("Returned '{}' TV shows for user '{}'.", shows.Count(), user.CurrentUser);
+            foreach (var item in shows)
+            {
+                logger.LogDebug("\tReturning TV show: '{}'.", item.Title);
+            }
             return View(shows);
         }
 
@@ -42,6 +55,7 @@ namespace MovieBacklog.Controllers
         public ActionResult Thumbnail(int id)
         {
             byte[] image = mediaRecordService.GetThumbnail(id);
+            logger.LogDebug("Returning thumbnail for media record with ID '{}'.", id);
             return image == null ? NotFound() : File(image, "image/webp");
         }
 
@@ -49,12 +63,14 @@ namespace MovieBacklog.Controllers
         public ActionResult Users(string newUser)
         {
             user.CurrentUser = newUser;
+            logger.LogInformation("Changed current user to '{}'.", newUser);
             return RedirectToAction("Movies");
         }
 
         [HttpGet]
         public JsonResult CurrentUser()
         {
+            logger.LogDebug("Returning current user: '{}'.", user.CurrentUser);
             return Json(user.CurrentUser);
         }
 
@@ -67,6 +83,12 @@ namespace MovieBacklog.Controllers
             var foundMediaRcords = ImdbApiCall(mediaRecordTitle)
                 .Where(mediaRecord => 
                 mediaRecordBacklog.Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title) == false);
+            
+            logger.LogInformation("Found '{}' media records for user '{}'.", foundMediaRcords.Count(), user.CurrentUser);
+            foreach (var item in mediaRecordBacklog)
+            {
+                logger.LogDebug("\tReturning movie: '{}'.", item.Title);
+            }
 
             return View(foundMediaRcords);
         }
@@ -74,6 +96,7 @@ namespace MovieBacklog.Controllers
         [HttpDelete]
         public void DeleteMediaRecord(int id)
         {
+            logger.LogInformation("Deleting media record with ID '{}' for user '{}'.", id, user.CurrentUser);
             if (!mediaRecordService.RemoveMediaRecord(id))
             {
                 throw new System.Exception("Failed to remove media record from backlog.");
@@ -92,6 +115,7 @@ namespace MovieBacklog.Controllers
             };
 
             MediaRecord media = newSearchedMediaRecord.ToMediaRecord(user.CurrentUser);
+            logger.LogInformation("Adding media record '{}' to backlog for user '{}'.", media, user.CurrentUser);
             if (!mediaRecordService.AddMediaRecordToBacklog(media))
             {
                 throw new System.Exception("Failed to add media record to backlog.");
@@ -155,6 +179,12 @@ namespace MovieBacklog.Controllers
             {
                 throw new System.Exception("Failed to import media records.");
             }
+
+            logger.LogInformation("Imported '{}' media records for user '{}'.", mediaRecords.Count, user.CurrentUser);
+            foreach (var item in mediaRecords)
+            {
+                logger.LogDebug("Imported media '{}'.", item);
+            }
         }
 
         [HttpPost]
@@ -162,6 +192,12 @@ namespace MovieBacklog.Controllers
         {
             List<MediaRecord> backlog = mediaRecordService.GetBacklog(user.CurrentUser);
             string jsonString = JsonConvert.SerializeObject(backlog, Formatting.Indented);
+
+            logger.LogInformation("Exported '{}' media records for user '{}'.", backlog.Count, user.CurrentUser);
+            foreach (var item in jsonString)
+            {
+                logger.LogDebug("Exported media '{}'", item);
+            }
             return Json(jsonString);
         }
 
@@ -173,6 +209,8 @@ namespace MovieBacklog.Controllers
             request.AddHeader("x-rapidapi-key", System.Environment.GetEnvironmentVariable("RAPIDAPI_KEY"));
             RestResponse response = client.Execute(request);
 
+            logger.LogDebug("IMDB API call for title '{}' returned status code '{}'.", title, response.StatusCode);
+            logger.LogDebug("IMDB API response content: '{}'.", response.Content);
             return CreateMediaRecordsFromJson(response.Content);
         }
 
