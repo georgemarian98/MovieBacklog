@@ -84,7 +84,7 @@ namespace MovieBacklog.Controllers
                 .Where(mediaRecord => 
                 mediaRecordBacklog.Exists(mediaRecordBacklog => mediaRecordBacklog.Title == mediaRecord.Title) == false);
             
-            logger.LogInformation("Found '{}' media records for user '{}'.", foundMediaRcords.Count(), user.CurrentUser);
+            logger.LogInformation("Found '{}' media records for input string '{}'.", foundMediaRcords.Count(), mediaRecordTitle);
             foreach (var item in mediaRecordBacklog)
             {
                 logger.LogDebug("\tReturning movie: '{}'.", item.Title);
