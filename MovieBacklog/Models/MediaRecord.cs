@@ -22,5 +22,10 @@ namespace MovieBacklog.Models
         public bool IsMovie { get; set; }
 
         public string AddedBy { get; set; }
+
+        public override string ToString()
+        {
+            return $"Id: {Id}, Title: {Title}, DateAdded: {DateAdded}, ImdbUrl: {ImdbUrl}, Year: {Year}, IsMovie: {IsMovie}, AddedBy: {AddedBy}";
+        }
     }
 }

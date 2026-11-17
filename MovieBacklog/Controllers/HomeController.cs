@@ -194,7 +194,7 @@ namespace MovieBacklog.Controllers
             string jsonString = JsonConvert.SerializeObject(backlog, Formatting.Indented);
 
             logger.LogInformation("Exported '{}' media records for user '{}'.", backlog.Count, user.CurrentUser);
-            foreach (var item in jsonString)
+            foreach (var item in backlog)
             {
                 logger.LogDebug("Exported media '{}'", item);
             }
