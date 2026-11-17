@@ -1,0 +1,18 @@
+{
+  "name": "Movie Backlog",
+  "short_name": "Backlog",
+  "description": "Keep track of movies and TV shows you want to watch.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "src": "/icons/logo-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

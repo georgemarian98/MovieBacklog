@@ -3,10 +3,12 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#ffffff" />
     <title>IMDB Movie Backlog</title>
+    <link rel="manifest" href="~/manifest.webmanifest" />
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
-    <link rel="shortcut icon" href="~/logo.jpg" />
+    <link rel="shortcut icon" href="~/icons/logo-32x32.png" />
 </head>
 <body>
     <header>
@@ -15,7 +17,7 @@
             <button class="btn" onclick="exportLibrary()">Export library</button>
             <div class="container">
                 <a class="navbar-brand d-flex align-items-center" asp-area="" asp-action="Movies" asp-controller="Home">
-                    <img src="~/logo.jpg" alt="logo" class="site-logo" />
+                    <img src="~/icons/logo-32x32.png" alt="logo" class="site-logo" />
                     <span class="brand-text">Movie Backlog</span>
                 </a>
 
@@ -90,6 +92,16 @@
             &copy; 2021 - MovieBacklog
         </div>
     </footer>
+    <script>
+        if ("serviceWorker" in navigator) {
+            window.addEventListener("load", function () {
+                navigator.serviceWorker.register("/sw.js")
+                    .catch(function (error) {
+                        console.error("Service worker registration failed:", error);
+                    });
+            });
+        }
+    </script>
 </body>
 </html>
 
