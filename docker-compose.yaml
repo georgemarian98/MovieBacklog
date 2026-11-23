@@ -5,8 +5,10 @@ services:
     container_name: moviebacklog
     image: moviebacklog_image
     build:
-      context: .
-      dockerfile: MovieBacklog/Dockerfile
+      context: MovieBacklog
+      args:
+        APP_ARCH: ${APP_ARCH:-linux-x64}
+
     restart: unless-stopped
     # Port will be proxied, so no need to expose it here
     # ports:

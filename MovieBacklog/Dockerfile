@@ -11,16 +11,17 @@ RUN dotnet tool install --global dotnet-ef --version 10.0.0
 ENV PATH="$PATH:/root/.dotnet/tools"
 
 WORKDIR /src
-COPY ["./MovieBacklog/MovieBacklog.csproj", "App/"]
+COPY ["./MovieBacklog.csproj", "App/"]
 RUN dotnet restore "App/MovieBacklog.csproj"
 COPY . ./App
 WORKDIR "/src/App"
-RUN dotnet build "./MovieBacklog/MovieBacklog.csproj" -c Release -o /app/build
-RUN dotnet ef migrations add InitialCreate -p "./MovieBacklog/MovieBacklog.csproj" -s "./MovieBacklog/MovieBacklog.csproj" -o "./Migrations" --verbose
+RUN dotnet build "./MovieBacklog.csproj" -c Release -o /app/build
+RUN dotnet ef migrations add InitialCreate -p "./MovieBacklog.csproj" -s "./MovieBacklog.csproj" -o "./Migrations" --verbose
 
 FROM build AS publish
-RUN dotnet publish "./MovieBacklog/MovieBacklog.csproj" \
-    -c Release -r linux-x64 --self-contained false \
+ARG APP_ARCH
+RUN dotnet publish "./MovieBacklog.csproj" \
+    -c Release -r "$APP_ARCH" --self-contained false \
     -p:UseAppHost=false -o /app/publish
 
 FROM base AS final
