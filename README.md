@@ -9,7 +9,7 @@ Technologies used:
 `CONFIG_PATH` is the desired location for the sqllite database and keys files.
 
 In order to build the project run:
-`docker compose build moviebacklog`
+`docker compose build`
 
 When you run the app for the first time, the database need to be initialized, Use the following commands in movie-backlog/Moviebacklog folder:
 - `dotnet ef migrations add <MESSAGE>`
